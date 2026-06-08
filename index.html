@@ -7,14 +7,14 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-color: #080808;
-            --text-color: #ffffff;
-            --text-muted: rgba(255, 255, 255, 0.4);
-            --border-color: rgba(255, 255, 255, 0.07);
+            --bg-black: #000000;
+            --text-white: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.15);
         }
 
         *, *::before, *::after { 
@@ -25,438 +25,642 @@
         
         html { 
             scroll-behavior: smooth; 
+            background-color: var(--bg-black);
         }
         
         body { 
-            background: var(--bg-color); 
-            color: var(--text-color); 
+            background-color: var(--bg-black); 
+            color: var(--text-white); 
             font-family: 'DM Sans', sans-serif; 
             overflow-x: hidden; 
-        }
-
-        /* Responsive Cursor Configuration */
-        @media (min-width: 769px) {
-            body { cursor: none; }
-            a, button, .work-row { cursor: none; }
-            #custom-cursor {
-                width: 10px; height: 10px;
-                background: #fff;
-                border-radius: 50%;
-                position: fixed;
-                pointer-events: none;
-                z-index: 9999;
-                transform: translate(-50%, -50%);
-                transition: width 0.3s, height 0.3s, background 0.3s, border 0.3s;
-                mix-blend-mode: difference;
-                will-change: transform;
-            }
-            #custom-cursor.hovering {
-                width: 40px; height: 40px;
-                background: rgba(255,255,255,0.15);
-                border: 1px solid rgba(255,255,255,0.5);
-                backdrop-filter: blur(4px);
-                -webkit-backdrop-filter: blur(4px);
-            }
+            -webkit-font-smoothing: antialiased;
         }
 
         .serif { font-family: 'Instrument Serif', serif; }
-        .serif-italic { font-family: 'Instrument Serif', serif; font-style: italic; }
+        .italic { font-family: 'Instrument Serif', serif; font-style: italic; }
 
-        /* Liquid Glass Implementation */
-        .glass {
-            background: rgba(255,255,255,0.03);
+        /* THE LIQUID GLASS ENGINE */
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.01);
+            background-blend-mode: luminosity;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08);
         }
 
-        /* Opening Screen Intro Curtain Overlay */
-        #intro-overlay {
-            position: fixed; 
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
             inset: 0;
-            background: var(--bg-color);
-            z-index: 1000;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            transition: opacity 0.6s ease-in-out, visibility 0.6s ease-in-out;
-            opacity: 1;
-            visibility: visible;
-        }
-        .intro-grid {
-            position: absolute; inset: 0; overflow: hidden; opacity: 0.04; pointer-events: none;
-        }
-        .intro-line {
-            position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,0.5);
-        }
-
-        /* Infinite Seamless Marquees */
-        @keyframes marquee {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-50%, 0, 0); }
-        }
-        .marquee-container {
-            overflow: hidden; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 14px 0;
-        }
-        .marquee-inner {
-            display: flex; width: max-content; animation: marquee 22s linear infinite; white-space: nowrap;
-            font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.25);
-        }
-        .marquee-inner-rev {
-            display: flex; width: max-content; animation: marquee 18s linear infinite reverse; white-space: nowrap;
-            font-size: 11px; font-style: italic; font-family: 'Instrument Serif', serif; color: rgba(255,255,255,0.18);
+            border-radius: inherit;
+            padding: 1.4px;
+            background: linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 0.45) 0%,
+                rgba(255, 255, 255, 0.15) 20%,
+                rgba(255, 255, 255, 0) 40%,
+                rgba(255, 255, 255, 0) 60%,
+                rgba(255, 255, 255, 0.15) 80%,
+                rgba(255, 255, 255, 0.45) 100%
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
         }
 
-        /* Navigation Links */
+        /* SECTION 1: HERO VIEWPORT */
+        .hero-container {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .hero-video-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-cover: cover;
+            object-fit: cover;
+            object-position: bottom;
+            z-index: 1;
+            opacity: 0; /* Managed smoothly via requestAnimationFrame script */
+        }
+
+        /* Navigation Menu Pill Layout */
         nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding: 20px 32px;
-            display: flex; align-items: center; justify-content: space-between;
-            background: linear-gradient(to bottom, rgba(8,8,8,0.8), transparent);
-            backdrop-filter: blur(4px);
-        }
-        .nav-links { display: flex; gap: 36px; align-items: center; }
-        .nav-link {
-            position: relative; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-            color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.3s;
-        }
-        .nav-link::after {
-            content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 1px;
-            background: #fff; transform: scaleX(0); transform-origin: left; transition: transform 0.35s ease;
-        }
-        .nav-link:hover { color: #fff; }
-        .nav-link:hover::after { transform: scaleX(1); }
-
-        /* Architectural Content Layout Framework */
-        section { padding: 140px 48px; position: relative; }
-        #hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 72px; }
-        
-        .hero-grid { position: absolute; inset: 0; opacity: 0.025; pointer-events: none; }
-        .hero-glow {
-            position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%);
-            width: 60vw; height: 60vw; background: radial-gradient(ellipse, rgba(255,255,255,0.03) 0%, transparent 65%); pointer-events: none;
+            position: relative;
+            z-index: 20;
+            width: 100%;
+            padding: 24px;
         }
 
-        h1 { font-size: clamp(48px, 8.5vw, 110px); font-weight: 400; letter-spacing: -0.03em; line-height: 0.95; }
-        
-        /* Interactive Rows */
-        .work-list { margin-top: 48px; }
-        .work-row {
-            border-bottom: 1px solid var(--border-color); padding: 28px 0;
-            display: flex; align-items: center; justify-content: space-between;
-            text-decoration: none; color: inherit; transition: background 0.3s, padding-left 0.3s;
-        }
-        .work-row:hover { background: rgba(255,255,255,0.02); padding-left: 16px; }
-        .work-title { font-size: clamp(22px, 3vw, 38px); letter-spacing: -0.02em; }
-        
-        /* Live Viewport Interactive Preview Box */
-        #preview-panel {
-            position: fixed; right: 48px; top: 50%; transform: translateY(-50%);
-            width: 360px; height: 240px; border-radius: 16px; overflow: hidden;
-            pointer-events: none; z-index: 100; border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.6); display: none; opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        #preview-panel iframe {
-            width: 154%; height: 154%; border: none; transform: scale(0.65); transform-origin: top left;
+        .nav-pill {
+            max-width: 1024px;
+            margin: 0 auto;
+            border-radius: 9999px;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: var(--border-color); margin-top: 48px; }
-        .method-card { background: var(--bg-color); padding: 48px 40px; }
-        
-        .services-row {
-            display: grid; grid-template-columns: 80px 1fr 1fr; gap: 40px; padding: 40px 0; border-top: 1px solid var(--border-color);
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
 
-        /* Scroll Frame Indicator Mechanics */
-        .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent); margin: 0 auto; }
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            margin-left: 32px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--text-white); }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-text {
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-glass-pill {
+            border-radius: 9999px;
+            padding: 8px 24px;
+            text-decoration: none;
+            color: var(--text-white);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Hero Text Alignments */
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 24px;
+            text-align: center;
+            transform: translateY(-8%);
+        }
+
+        .hero-headline {
+            font-size: clamp(48px, 8.5vw, 110px);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            margin-bottom: 32px;
+        }
+
+        /* Intake Entry Box */
+        .intake-box {
+            max-width: 576px;
+            width: 100%;
+            border-radius: 9999px;
+            padding: 8px 8px 8px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .intake-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-white);
+            flex: 1;
+            font-size: 15px;
+        }
+
+        .intake-box input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-submit-circle {
+            background: var(--text-white);
+            color: #000000;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            text-decoration: none;
+        }
+
+        .hero-subtitle {
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 460px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        .btn-manifesto {
+            border-radius: 9999px;
+            padding: 12px 32px;
+            text-decoration: none;
+            color: var(--text-white);
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .btn-manifesto:hover { background: rgba(255,255,255,0.05); }
+
+        /* SECTION 2: ABOUT / MANIFESTO */
+        .about-section {
+            background-color: var(--bg-black);
+            padding: 140px 24px;
+            position: relative;
+            overflow: hidden;
+            background-image: radial-gradient(ellipse at top, rgba(255,255,255,0.03) 0%, transparent 70%);
+        }
+
+        .wrapper-max {
+            max-width: 1152px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .section-label {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+            display: block;
+            font-weight: 500;
+        }
+
+        .about-heading {
+            font-size: clamp(32px, 5.5vw, 68px);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            font-weight: 400;
+        }
+
+        /* SECTION 3: FEATURED VIDEO PANEL */
+        .featured-section {
+            background-color: var(--bg-black);
+            padding: 24px;
+        }
+
+        .video-card-container {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            width: 100%;
+        }
+
+        .featured-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 40px;
+        }
+
+        .approach-card {
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 448px;
+            width: 100%;
+        }
+
+        /* INDEX LIST PORTFOLIO */
+        .portfolio-list {
+            margin-top: 64px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .portfolio-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-decoration: none;
+            color: inherit;
+            transition: padding-left 0.3s ease;
+        }
+        .portfolio-row:hover {
+            padding-left: 16px;
+            color: var(--text-muted);
+        }
+
+        .port-title {
+            font-size: clamp(22px, 3vw, 36px);
+        }
+
+        /* SECTION 4: PHILOSOPHY ARCHITECTURE */
+        .philosophy-section {
+            background-color: var(--bg-black);
+            padding: 120px 24px;
+        }
+
+        .philosophy-heading {
+            font-size: clamp(40px, 7vw, 84px);
+            letter-spacing: -0.02em;
+            margin-bottom: 64px;
+        }
+
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: start;
+        }
+
+        .grid-video-box {
+            border-radius: 24px;
+            overflow: hidden;
+            aspect-ratio: 4 / 3;
+            width: 100%;
+        }
+
+        .right-text-stack {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .text-block {
+            padding: 32px 0;
+        }
+        .text-block:first-child { padding-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+        .block-body {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        /* SECTION 5: SERVICES */
+        .services-section {
+            background-color: var(--bg-black);
+            padding: 120px 24px;
+            background-image: radial-gradient(ellipse at center, rgba(255,255,255,0.02) 0%, transparent 60%);
+        }
+
+        .services-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 64px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .service-card {
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .card-video-area {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-video-area video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s ease;
+        }
+        .service-card:hover .card-video-area video {
+            transform: scale(1.05);
+        }
+
+        .service-card-body {
+            padding: 32px;
+            position: relative;
+        }
+
+        .service-card-title {
+            font-size: 24px;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        /* FOOTER CONVERSATION INTAKE */
+        .contact-section {
+            background-color: var(--bg-black);
+            padding: 140px 24px 40px;
+        }
+
+        .mail-link {
+            font-size: clamp(32px, 6vw, 76px);
+            color: var(--text-white);
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 48px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 8px;
+            transition: opacity 0.2s;
+        }
+        .mail-link:hover { opacity: 0.7; }
 
         footer {
-            border-top: 1px solid var(--border-color); padding-top: 40px; margin-top: 80px;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
-            font-size: 11px; letter-spacing: 0.05em; color: rgba(255,255,255,0.3);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
         }
 
-        /* Mobile Scale Adaptations Override */
+        /* MOBILE OVERRIDES */
         @media (max-width: 768px) {
-            section { padding: 80px 24px; }
-            #hero { padding-bottom: 40px; }
-            .services-row { grid-template-columns: 1fr; gap: 16px; }
-            #preview-panel { display: none !important; }
-            footer { flex-direction: column; text-align: center; gap: 12px; }
+            .nav-links, .hide-mobile { display: none !important; }
+            .split-grid, .services-grid { grid-template-columns: 1fr; gap: 40px; }
+            .video-overlay { flex-direction: column; align-items: flex-start; gap: 24px; padding: 24px; }
+            nav { padding: 16px; }
+            .nav-pill { padding: 8px 16px; }
+            .hero-headline { font-size: 11vw; }
         }
     </style>
 </head>
 <body>
 
-    <div id="custom-cursor"></div>
+    <div class="hero-container">
+        <video id="bg-video" class="hero-video-bg" muted playsinline preload="auto"></video>
+        
+        <nav>
+            <div class="nav-pill liquid-glass">
+                <div class="nav-left">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                    <span>ROVOCHÉ</span>
+                    <div class="nav-links">
+                        <a href="#work">Work</a>
+                        <a href="#method">Method</a>
+                        <a href="#studio">Studio</a>
+                    </div>
+                </div>
+                <div class="nav-right">
+                    <a href="#contact" class="btn-text hide-mobile">Contact Intake</a>
+                    <a href="mailto:hello@rovoche.com" class="btn-glass-pill liquid-glass">Begin a Project</a>
+                </div>
+            </div>
+        </nav>
 
-    <div id="intro-overlay">
-        <div class="intro-grid">
-            <div class="intro-line" style="left: 25%"></div>
-            <div class="intro-line" style="left: 50%"></div>
-            <div class="intro-line" style="left: 75%"></div>
-        </div>
-        <div style="text-align: center; z-index: 10;">
-            <p style="font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.4; margin-bottom: 16px;">Built on rock</p>
-            <h2 class="serif" style="font-size: clamp(50px, 10vw, 120px); letter-spacing: -0.02em; line-height: 1;">ROVOCHÉ</h2>
-            <div style="width: 60px; height: 1px; background: rgba(255,255,255,0.2); margin: 20px auto;"></div>
-            <p style="font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.3;">Lagos · London · New York</p>
+        <div class="hero-content">
+            <h1 class="hero-headline">Digital presence,<br><span class="italic text-white/60">crafted on solid ground.</span></h1>
+            
+            <div class="intake-box liquid-glass">
+                <input type="text" placeholder="Tell us about your brand vision..." readonly onclick="window.location.href='mailto:hello@rovoche.com'">
+                <a href="mailto:hello@rovoche.com" class="btn-submit-circle">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+            </div>
+
+            <p class="hero-subtitle">Bespoke web architecture for premium brands demanding unshakeable digital foundations. From Lagos to the world stage.</p>
+            <a href="#studio" class="btn-manifesto liquid-glass">Read Studio Manifesto</a>
         </div>
     </div>
 
-    <nav>
-        <span class="serif" style="font-size: 18px; letter-spacing: -0.01em;">ROVOCHÉ</span>
-        <div class="nav-links">
-            <a href="#work" class="nav-link">Work</a>
-            <a href="#method" class="nav-link">Method</a>
-            <a href="#studio" class="nav-link">Studio</a>
-            <a href="#contact" class="nav-link">Contact</a>
+    <section class="about-section" id="studio">
+        <div class="wrapper-max">
+            <span class="section-label">01 / The Belief</span>
+            <h2 class="about-heading">
+                A decade spent building organisations across Nigeria embedded a singular truth: the difference between a brand people remember and one they scroll past lies entirely in <span class="italic" style="color: rgba(255,255,255,0.5);">how it is presented.</span> ROVOCHÉ exists because premium industries deserve an <span class="italic" style="color: rgba(255,255,255,0.5);">unshakeable presence.</span>
+            </h2>
         </div>
-        <a href="mailto:hello@rovoche.com" class="glass" style="padding: 8px 20px; border-radius: 999px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.8); text-decoration: none;">
-            Begin a Project
-        </a>
-    </nav>
-
-    <section id="hero">
-        <div class="hero-grid">
-            <div style="position: absolute; top: 0; bottom: 0; left: 25%; width: 1px; background: rgba(255,255,255,0.02);"></div>
-            <div style="position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(255,255,255,0.02);"></div>
-            <div style="position: absolute; top: 0; bottom: 0; left: 75%; width: 1px; background: rgba(255,255,255,0.02);"></div>
-        </div>
-        <div class="hero-glow"></div>
-        
-        <div style="position: absolute; top: 120px; left: 48px; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.3;">
-            Premium Web Architecture — Est. 2024
-        </div>
-        <div style="position: absolute; top: 120px; right: 48px; text-align: right; font-size: 11px; opacity: 0.3; line-height: 1.7;">
-            <div>Lagos · London · New York</div>
-            <div>Built on rock.</div>
-        </div>
-
-        <div style="max-width: 1100px; margin-bottom: 40px;">
-            <h1 class="serif">Digital presence,</h1>
-            <h1 class="serif-italic" style="color: rgba(255,255,255,0.4);">crafted on solid ground.</h1>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 32px;">
-            <p style="font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.7; max-width: 360px;">
-                Bespoke web architecture for premium brands demanding unshakeable digital foundations — from Lagos to the world stage.
-            </p>
-            <a href="mailto:hello@rovoche.com" style="display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.7); text-decoration: none;">
-                Start a project
-                <span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2);">
-                    <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 12L12 2M12 2H4M12 2V10" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-            </a>
-        </div>
-        <div style="margin-top: 60px;"><div class="scroll-line"></div></div>
     </section>
 
-    <div class="marquee-container">
-        <div class="marquee-inner">
-            <span>ROVOCHÉ &nbsp;·&nbsp; Built on Rock &nbsp;·&nbsp; Lagos &nbsp;·&nbsp; London &nbsp;·&nbsp; New York &nbsp;·&nbsp; Premium Web &nbsp;·&nbsp; Unshakeable Foundations &nbsp;·&nbsp; Digital Presence &nbsp;·&nbsp; Crafted with Precision &nbsp;·&nbsp; </span>
-            <span>ROVOCHÉ &nbsp;·&nbsp; Built on Rock &nbsp;·&nbsp; Lagos &nbsp;·&nbsp; London &nbsp;·&nbsp; New York &nbsp;·&nbsp; Premium Web &nbsp;·&nbsp; Unshakeable Foundations &nbsp;·&nbsp; Digital Presence &nbsp;·&nbsp; Crafted with Precision &nbsp;·&nbsp; </span>
-        </div>
-    </div>
+    <section class="featured-section" id="work">
+        <div class="wrapper-max">
+            <span class="section-label">02 / Selected Portfolio</span>
+            
+            <div class="video-card-container">
+                <video class="featured-video" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260402_054547_9875cfc5-155a-4229-8ec8-b7ba7125cbf8.mp4" muted autoplay loop playsinline></video>
+                <div class="video-overlay">
+                    <div class="approach-card liquid-glass">
+                        <span class="section-label" style="margin-bottom: 12px; font-size: 11px;">Our Standard</span>
+                        <p style="font-size: 14px; line-height: 1.6; color: var(--text-white);">Every project begins with deep grid architecture and ends with micro-interactions tailored entirely to push the standard forward.</p>
+                    </div>
+                    <a href="mailto:hello@rovoche.com" class="btn-glass-pill liquid-glass" style="padding: 12px 32px;">Explore Ventures</a>
+                </div>
+            </div>
 
-    <section id="studio">
-        <span style="display: block; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.3; margin-bottom: 48px;">01 / The Studio</span>
-        <div style="max-width: 950px; display: flex; flex-direction: column; gap: 8px;">
-            <p class="serif" style="font-size: clamp(26px, 4.2vw, 48px); line-height: 1.2;">A decade spent building organisations across Nigeria</p>
-            <p class="serif-italic" style="font-size: clamp(26px, 4.2vw, 48px); line-height: 1.2; opacity: 0.45;">embedded a singular truth:</p>
-            <p class="serif" style="font-size: clamp(26px, 4.2vw, 48px); line-height: 1.2;">the difference between a brand people remember</p>
-            <p class="serif-italic" style="font-size: clamp(26px, 4.2vw, 48px); line-height: 1.2; opacity: 0.45;">and one they scroll past lies entirely in</p>
-            <p class="serif-italic" style="font-size: clamp(26px, 4.2vw, 48px); line-height: 1.2;">how it is presented.</p>
+            <div class="portfolio-list">
+                <a href="https://rovoche.github.io/luxuryfashion/" target="_blank" class="portfolio-row">
+                    <span class="serif port-title">Styledbylayo — <span class="italic" style="opacity: 0.5;">Luxury Fashion</span></span>
+                    <span>View Project &rarr;</span>
+                </a>
+                <a href="https://rovoche.github.io/Glam-and-Makeup/" target="_blank" class="portfolio-row">
+                    <span class="serif port-title">Glamsbykiki — <span class="italic" style="opacity: 0.5;">Beauty Atelier</span></span>
+                    <span>View Project &rarr;</span>
+                </a>
+                <a href="https://twaynesafehaven.org" target="_blank" class="portfolio-row">
+                    <span class="serif port-title">Twayne Safe Haven — <span class="italic" style="opacity: 0.5;">Mental Health NGO</span></span>
+                    <span>View Project &rarr;</span>
+                </a>
+                <a href="https://peasis.com" target="_blank" class="portfolio-row">
+                    <span class="serif port-title">Peasis — <span class="italic" style="opacity: 0.5;">Fashion & Couture</span></span>
+                    <span>View Project &rarr;</span>
+                </a>
+            </div>
         </div>
-        <div style="margin-top: 64px; display: flex; gap: 64px; border-top: 1px solid var(--border-color); padding-top: 40px; flex-wrap: wrap;">
+    </section>
+
+    <section class="philosophy-section" id="method">
+        <div class="wrapper-max">
+            <h2 class="serif philosophy-heading">Architecture <span class="italic" style="opacity: 0.35;">x</span> Precision.</h2>
+            
+            <div class="split-grid">
+                <div class="grid-video-box">
+                    <video class="featured-video" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260307_083826_e938b29f-a43a-41ec-a153-3d4730578ab8.mp4" muted autoplay loop playsinline></video>
+                </div>
+                <div class="right-text-stack">
+                    <div class="text-block">
+                        <span class="section-label" style="margin-bottom: 16px;">01 / Strategy Hierarchy</span>
+                        <p class="block-body">We map information layouts and structural user behaviors completely before writing a line of code. Form stays locked behind execution strategy.</p>
+                    </div>
+                    <div class="text-block">
+                        <span class="section-label" style="margin-between: 16px; margin-top: 16px;">02 / Hand-Crafted Code</span>
+                        <p class="block-body">Pristine hand-coded environments optimize every layout line. Zero heavy template baggage. Completely fluid mobile presentation engines.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="services-section">
+        <div class="wrapper-max">
+            <div class="services-header">
+                <h2 class="serif" style="font-size: clamp(36px, 5vw, 68px); font-weight: 400;">What We Build</h2>
+                <span class="section-label" style="margin-bottom: 0;">Bespoke Capabilities</span>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card liquid-glass">
+                    <div class="card-video-area">
+                        <video src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" muted autoplay loop playsinline></video>
+                    </div>
+                    <div class="service-card-body">
+                        <span class="section-label" style="margin-bottom: 12px; font-size: 11px;">Ecosystems</span>
+                        <h4 class="serif service-card-title">Corporate Architecture & Strategy</h4>
+                        <p style="font-size: 14px; opacity: 0.6; line-height: 1.6;">Premium digital infrastructures for corporate consultancies, real estate networks, and high-ticket startups globally.</p>
+                    </div>
+                </div>
+                <div class="service-card liquid-glass">
+                    <div class="card-video-area">
+                        <video src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260324_151826_c7218672-6e92-402c-9e45-f1e0f454bdc4.mp4" muted autoplay loop playsinline></video>
+                    </div>
+                    <div class="service-card-body">
+                        <span class="section-label" style="margin-bottom: 12px; font-size: 11px;">Curation</span>
+                        <h4 class="serif service-card-title">Luxury Retail & Brand Showcases</h4>
+                        <p style="font-size: 14px; opacity: 0.6; line-height: 1.6;">Editorial-grade environments explicitly designed for high-end fashion houses, beauty ateliers, jewellers, and luxury wellness hubs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+        <div class="wrapper-max">
+            <span class="section-label" style="margin-bottom: 16px;">Project Intake</span>
             <div>
-                <div style="font-size: 13px; margin-bottom: 4px;">Sammie Friday</div>
-                <div style="font-size: 11px; opacity: 0.35;">Founder & Creative Director</div>
+                <a href="mailto:hello@rovoche.com" class="serif mail-link italic">hello@rovoche.com</a>
             </div>
-            <div>
-                <div style="font-size: 13px; margin-bottom: 4px;">Rovoché</div>
-                <div style="font-size: 11px; opacity: 0.35;">Premium Web Studio, Lagos</div>
-            </div>
+            <footer>
+                <span>&copy; 2026 ROVOCHÉ</span>
+                <span class="hide-mobile">Lagos · London · New York</span>
+                <span>Infrastructure Rooted on Rock</span>
+            </footer>
         </div>
-    </section>
-
-    <section id="work">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px;">
-            <span style="font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.3;">02 / Selected Work</span>
-            <span style="font-size: 11px; opacity: 0.25;">4 Projects</span>
-        </div>
-        
-        <div class="work-list">
-            <a href="https://rovoche.github.io/luxuryfashion/" target="_blank" class="work-row" data-preview="https://rovoche.github.io/luxuryfashion/">
-                <div style="display: flex; align-items: center; gap: 32px;">
-                    <span style="font-size: 11px; opacity: 0.2;">01</span>
-                    <span class="serif work-title">Luxury Fashion House</span>
-                </div>
-                <span style="font-size: 11px; opacity: 0.4;">View &rarr;</span>
-            </a>
-            <a href="https://rovoche.github.io/Glam-and-Makeup/" target="_blank" class="work-row" data-preview="https://rovoche.github.io/Glam-and-Makeup/">
-                <div style="display: flex; align-items: center; gap: 32px;">
-                    <span style="font-size: 11px; opacity: 0.2;">02</span>
-                    <span class="serif work-title">Beauty Atelier</span>
-                </div>
-                <span style="font-size: 11px; opacity: 0.4;">View &rarr;</span>
-            </a>
-            <a href="https://twaynesafehaven.org" target="_blank" class="work-row" data-preview="https://twaynesafehaven.org">
-                <div style="display: flex; align-items: center; gap: 32px;">
-                    <span style="font-size: 11px; opacity: 0.2;">03</span>
-                    <span class="serif work-title">Community NGO Platform</span>
-                </div>
-                <span style="font-size: 11px; opacity: 0.4;">View &rarr;</span>
-            </a>
-            <a href="https://peasis.com" target="_blank" class="work-row" data-preview="https://peasis.com">
-                <div style="display: flex; align-items: center; gap: 32px;">
-                    <span style="font-size: 11px; opacity: 0.2;">04</span>
-                    <span class="serif work-title">Fashion & Couture Commerce</span>
-                </div>
-                <span style="font-size: 11px; opacity: 0.4;">View &rarr;</span>
-            </a>
-        </div>
-
-        <div id="preview-panel">
-            <iframe id="preview-frame" src=""></iframe>
-        </div>
-    </section>
-
-    <section id="method">
-        <span style="display: block; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.3; margin-bottom: 48px;">03 / Method</span>
-        <h2 class="serif" style="font-size: clamp(36px, 5.5vw, 72px); letter-spacing: -0.02em; margin-bottom: 64px;">
-            Architecture <span class="serif-italic" style="opacity: 0.25;">&times;</span> Precision.
-        </h2>
-        <div class="method-grid">
-            <div class="method-card">
-                <div style="font-size: 10px; opacity: 0.2; margin-bottom: 24px;">01</div>
-                <div class="serif" style="font-size: 22px; margin-bottom: 12px;">Architecture & Strategy</div>
-                <p style="font-size: 13px; opacity: 0.4; line-height: 1.8;">We map the exact information hierarchy, interface flows, and visual balance before a single line of code is deployed. Form follows strategy.</p>
-            </div>
-            <div class="method-card">
-                <div style="font-size: 10px; opacity: 0.2; margin-bottom: 24px;">02</div>
-                <div class="serif" style="font-size: 22px; margin-bottom: 12px;">Precision Craft</div>
-                <p style="font-size: 13px; opacity: 0.4; line-height: 1.8;">Hand-crafted in pristine code environments. No templates, no performance drag. Every site is built mobile-first and optimised for international scaling.</p>
-            </div>
-            <div class="method-card">
-                <div style="font-size: 10px; opacity: 0.2; margin-bottom: 24px;">03</div>
-                <div class="serif" style="font-size: 22px; margin-bottom: 12px;">Launch & Maintain</div>
-                <p style="font-size: 13px; opacity: 0.4; line-height: 1.8;">Every Rovoche site launches with SEO foundations, Google Analytics, and an optional retainer. Your digital foundation shouldn't need to be rebuilt.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="services">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 64px;">
-            <h2 class="serif" style="font-size: clamp(36px, 5vw, 68px);">What We Build</h2>
-            <span style="font-size: 10px; opacity: 0.3; letter-spacing: 0.2em; text-transform: uppercase;">Bespoke Capabilities</span>
-        </div>
-        <div>
-            <div class="services-row">
-                <span style="font-size: 11px; opacity: 0.2;">01</span>
-                <div>
-                    <div style="font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.3; margin-bottom: 8px;">Foundation</div>
-                    <div class="serif" style="font-size: 26px; line-height: 1.1;">Premium Brand Websites</div>
-                </div>
-                <p style="font-size: 13px; opacity: 0.4; line-height: 1.8;">Custom, fast-loading digital presences for fashion houses, beauty clinics, luxury spaces, and professional corporate architectures.</p>
-            </div>
-            <div class="services-row">
-                <span style="font-size: 11px; opacity: 0.2;">02</span>
-                <div>
-                    <div style="font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.3; margin-bottom: 8px;">Commerce</div>
-                    <div class="serif" style="font-size: 26px; line-height: 1.1;">E-Commerce Stores</div>
-                </div>
-                <p style="font-size: 13px; opacity: 0.4; line-height: 1.8;">Full premium Shopify structures built for brands selling seriously online. Integrated secure gateways, smooth user pathways, and cinematic curation.</p>
-            </div>
-            <div class="services-row">
-                <span style="font-size: 11px; opacity: 0.2;">03</span>
-                <div>
-                    <div style="font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.3; margin-bottom: 8px;">Systems</div>
-                    <div class="serif" style="font-size: 26px; line-height: 1.1;">Corporate Architecture</div>
-                </div>
-                <p style="font-size: 13px; opacity: 0.4; line-height: 1.8;">Clean platforms built for institutional foundations, NGOs, and ventures that require flawless content systems and cross-market legitimacy.</p>
-            </div>
-        </div>
-    </section>
-
-    <div class="marquee-container">
-        <div class="marquee-inner-rev">
-            <span>Your brand deserves a foundation that doesn't move &nbsp;·&nbsp; ROVOCHÉ &nbsp;·&nbsp; Your brand deserves a foundation that doesn't move &nbsp;·&nbsp; ROVOCHÉ &nbsp;·&nbsp; </span>
-            <span>Your brand deserves a foundation that doesn't move &nbsp;·&nbsp; ROVOCHÉ &nbsp;·&nbsp; Your brand deserves a foundation that doesn't move &nbsp;·&nbsp; ROVOCHÉ &nbsp;·&nbsp; </span>
-        </div>
-    </div>
-
-    <section id="contact" style="padding-bottom: 40px;">
-        <span style="display: block; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.3; margin-bottom: 32px;">Begin a Conversation</span>
-        <div style="margin-bottom: 48px;">
-            <a href="mailto:hello@rovoche.com" class="serif-italic" style="display: inline-block; font-size: clamp(32px, 6vw, 72px); color: #fff; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 4px; transition: opacity 0.3s;">
-                hello@rovoche.com
-            </a>
-        </div>
-        <p style="font-size: 13px; color: rgba(255,255,255,0.3); max-width: 420px; line-height: 1.8; margin-bottom: 60px;">
-            We work with a limited number of projects at a time. If you have a brand that deserves an unshakeable digital status — we'd like to hear about it.
-        </p>
-        
-        <footer>
-            <span>&copy; 2026 ROVOCHÉ</span>
-            <span>LAGOS · LONDON · NEW YORK</span>
-            <span>ALL INFRASTRUCTURE ROOTED ON ROCK.</span>
-        </footer>
     </section>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Intro Loading Curtain Animation Loop
-            const intro = document.getElementById("intro-overlay");
-            if (intro) {
-                setTimeout(() => {
-                    intro.style.opacity = "0";
-                    setTimeout(() => {
-                        intro.style.visibility = "hidden";
-                    }, 600);
-                }, 2500);
-            }
-
-            // Device Context Micro-Check Cursor Tracker
-            const cursor = document.getElementById("custom-cursor");
-            if (cursor && window.innerWidth > 768) {
-                window.addEventListener("mousemove", (e) => {
-                    cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-                });
-
-                document.querySelectorAll("a, button, [role=button], .work-row").forEach(element => {
-                    element.addEventListener("mouseenter", () => cursor.classList.add("hovering"));
-                    element.addEventListener("mouseleave", () => cursor.classList.remove("hovering"));
-                });
-            }
-
-            // Interactive Live Live-Site Preview Panel Matrix Handler
-            const previewPanel = document.getElementById("preview-panel");
-            const previewFrame = document.getElementById("preview-frame");
+            const video = document.getElementById("bg-video");
+            const videoUrl = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_074625_a81f018a-956b-43fb-9aee-4d1508e30e6a.mp4";
             
-            if (previewPanel && previewFrame && window.innerWidth > 768) {
-                document.querySelectorAll(".work-row").forEach(row => {
-                    row.addEventListener("mouseenter", (e) => {
-                        const targetUrl = row.getAttribute("data-preview");
-                        previewFrame.src = targetUrl;
-                        previewPanel.style.display = "block";
-                        setTimeout(() => {
-                            previewPanel.style.opacity = "1";
-                            previewPanel.style.transform = "translateY(-50%) scale(1)";
-                        }, 10);
-                    });
+            video.src = videoUrl;
+            video.load();
 
-                    row.addEventListener("mouseleave", () => {
-                        previewPanel.style.opacity = "0";
-                        previewPanel.style.transform = "translateY(-50%) scale(0.95)";
-                        setTimeout(() => {
-                            previewPanel.style.display = "none";
-                            previewFrame.src = "";
-                        }, 300);
-                    });
-                });
+            let targetOpacity = 0;
+            let currentOpacity = 0;
+
+            // Fluid RequestAnimationFrame mathematical interpolation handler
+            function smoothFade() {
+                if (Math.abs(currentOpacity - targetOpacity) > 0.01) {
+                    currentOpacity += (targetOpacity - currentOpacity) * 0.1;
+                    video.style.opacity = currentOpacity;
+                }
+                
+                // Track video remaining length metrics for seamless loops
+                if (video.currentTime > 0 && (video.duration - video.currentTime) <= 0.55) {
+                    targetOpacity = 0; // Trigger internal crossfade before loop break
+                }
+                
+                requestAnimationFrame(smoothFade);
             }
+
+            video.addEventListener("canplay", () => {
+                video.play().catch(err => console.log("Autoplay context pending active tap interaction"));
+                targetOpacity = 1;
+            });
+
+            video.addEventListener("ended", () => {
+                video.style.opacity = 0;
+                currentOpacity = 0;
+                setTimeout(() => {
+                    video.currentTime = 0;
+                    video.play().catch(e => {});
+                    targetOpacity = 1;
+                }, 100);
+            });
+
+            requestAnimationFrame(smoothFade);
         });
     </script>
 </body>
