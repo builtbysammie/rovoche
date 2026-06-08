@@ -1,13 +1,2361 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rovoche — Premium Web Design Studio, Nigeria</title>
+  <meta name="description" content="Rovoche builds premium digital experiences for fashion, beauty, hospitality, gems & jewellery, and high-end service brands across Nigeria and beyond." />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════
+       DESIGN TOKENS
+    ═══════════════════════════════════════════ */
+    :root {
+      --ink:       #0c0b09;
+      --ink-soft:  #1a1814;
+      --surface:   #f5f2ed;
+      --surface-2: #ede9e2;
+      --surface-3: #e4dfd6;
+      --cream:     #faf8f4;
+      --gold:      #b8965a;
+      --gold-lt:   #d4b07c;
+      --gold-pale: rgba(184,150,90,0.12);
+      --gold-line: rgba(184,150,90,0.25);
+      --text:      #0c0b09;
+      --muted:     #7a7568;
+      --dim:       #b5b0a7;
+      --line:      rgba(12,11,9,0.1);
+      --line-gold: rgba(184,150,90,0.2);
+      --max:       1320px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    ::selection { background: var(--gold-pale); color: var(--text); }
+
+    ::-webkit-scrollbar { width: 2px; }
+    ::-webkit-scrollbar-track { background: var(--surface); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); }
+
+    img { display: block; max-width: 100%; }
+
+    .wrap {
+      width: min(100% - 48px, var(--max));
+      margin: 0 auto;
+    }
+
+    /* ═══════════════════════════════════════════
+       CUSTOM CURSOR
+    ═══════════════════════════════════════════ */
+    #cursor-dot {
+      position: fixed;
+      width: 6px; height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s ease, opacity 0.3s;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s ease, height 0.3s ease, border-color 0.3s, opacity 0.3s;
+      opacity: 0.5;
+    }
+    body.cursor-hover #cursor-ring {
+      width: 56px; height: 56px;
+      border-color: var(--gold-lt);
+      opacity: 1;
+    }
+    body.cursor-hover #cursor-dot { transform: translate(-50%, -50%) scale(0); }
+
+    @media (pointer: coarse) {
+      body { cursor: auto; }
+      #cursor-dot, #cursor-ring { display: none; }
+    }
+
+    /* ═══════════════════════════════════════════
+       LOADER
+    ═══════════════════════════════════════════ */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--ink);
+      z-index: 8000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 32px;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    #loader.gone {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-wordmark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      color: var(--cream);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: loaderReveal 0.9s 0.2s forwards ease;
+    }
+    @keyframes loaderReveal {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .loader-bar-wrap {
+      width: 200px;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      overflow: hidden;
+      opacity: 0;
+      animation: loaderReveal 0.4s 0.8s forwards ease;
+    }
+    .loader-bar {
+      height: 100%;
+      background: var(--gold);
+      width: 0%;
+      animation: loadBar 1.6s 1s forwards cubic-bezier(0.25, 0, 0.1, 1);
+    }
+    @keyframes loadBar { to { width: 100%; } }
+
+    /* ═══════════════════════════════════════════
+       NAV
+    ═══════════════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      height: 76px;
+      transition: background 0.6s, border-bottom 0.6s;
+    }
+    nav.scrolled {
+      background: rgba(250, 248, 244, 0.94);
+      backdrop-filter: blur(24px) saturate(1.6);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: min(100% - 48px, var(--max));
+      margin: 0 auto;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.55rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-logo-diamond {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .nav-links a {
+      position: relative;
+      transition: color 0.25s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0; right: 0;
+      height: 1px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .nav-cta {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink) !important;
+      border: 1px solid var(--gold-line);
+      padding: 11px 22px;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.3s;
+    }
+    .nav-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--ink);
+      transform: translateX(-101%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .nav-cta:hover { color: var(--cream) !important; }
+    .nav-cta:hover::before { transform: translateX(0); }
+    .nav-cta span { position: relative; z-index: 1; }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 600;
+    }
+    .hamburger span {
+      display: block;
+      width: 26px; height: 1.5px;
+      background: var(--ink);
+      transition: transform 0.3s, opacity 0.3s;
+      transform-origin: center;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      z-index: 400;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s;
+    }
+    .mobile-nav.open { opacity: 1; pointer-events: all; }
+    .mobile-nav a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 8vw, 4rem);
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .mobile-nav a:hover { color: var(--gold); }
+    .mobile-nav a.m-cta {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold) !important;
+      border: 1px solid var(--gold-line);
+      padding: 14px 36px;
+      margin-top: 20px;
+    }
+
+    /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      position: relative;
+      overflow: hidden;
+      background: var(--cream);
+    }
+
+    /* Subtle grain overlay */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 180px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* Background geometric lines */
+    .hero-grid-lines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-grid-lines::before {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--line) 20%, var(--line) 80%, transparent);
+    }
+    .hero-grid-lines::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      top: 65%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--line) 20%, var(--line) 80%, transparent);
+    }
+
+    /* Large background text */
+    .hero-bg-text {
+      position: absolute;
+      bottom: -0.08em;
+      left: -0.02em;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(140px, 22vw, 300px);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(12,11,9,0.055);
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+      white-space: nowrap;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding-top: 76px;
+      padding-bottom: 80px;
+      min-height: 100vh;
+    }
+
+    .hero-inner {
+      width: min(100% - 48px, var(--max));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: flex-end;
+    }
+
+    .hero-kicker {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: heroUp 0.7s 2.6s forwards ease;
+    }
+    .hero-kicker::before {
+      content: '';
+      display: block;
+      width: 28px; height: 1px;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .hero-h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.4rem, 6.5vw, 8rem);
+      font-weight: 300;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      opacity: 0;
+      transform: translateY(24px);
+      animation: heroUp 0.9s 2.8s forwards ease;
+    }
+    .hero-h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      padding-bottom: 14px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: heroUp 0.8s 3.1s forwards ease;
+    }
+
+    @keyframes heroUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.82;
+      max-width: 380px;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 600; }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--cream);
+      background: var(--ink);
+      padding: 16px 36px;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold);
+      transform: translateX(-101%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-primary:hover::before { transform: translateX(0); }
+    .btn-primary span { position: relative; z-index: 1; }
+
+    .btn-ghost {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.25s;
+    }
+    .btn-ghost svg { transition: transform 0.25s; }
+    .btn-ghost:hover { color: var(--text); }
+    .btn-ghost:hover svg { transform: translateX(4px); }
+
+    .hero-stats-row {
+      display: flex;
+      gap: 32px;
+      border-top: 1px solid var(--line);
+      padding-top: 28px;
+    }
+    .hero-stat-item {}
+    .hero-stat-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      font-weight: 300;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .hero-stat-val sup {
+      font-size: 0.9rem;
+      vertical-align: super;
+      color: var(--gold);
+    }
+    .hero-stat-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-top: 4px;
+    }
+
+    /* Hero scroll indicator */
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dim);
+      z-index: 3;
+      opacity: 0;
+      animation: heroUp 0.6s 3.8s forwards ease;
+    }
+    .hero-scroll-line {
+      width: 1px;
+      height: 44px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.1); }
+    }
+
+    /* ═══════════════════════════════════════════
+       MARQUEE STRIP
+    ═══════════════════════════════════════════ */
+    .marquee-section {
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--ink);
+      overflow: hidden;
+      padding: 18px 0;
+    }
+    .marquee-track-wrap {
+      display: flex;
+      -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+      mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+    }
+    .marquee-track {
+      display: flex;
+      flex-shrink: 0;
+      animation: marqueeScroll 30s linear infinite;
+    }
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-100%); }
+    }
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      padding: 0 28px;
+      white-space: nowrap;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(250,248,244,0.5);
+    }
+    .marquee-diamond {
+      width: 5px; height: 5px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       ABOUT / PHILOSOPHY
+    ═══════════════════════════════════════════ */
+    .philosophy-section {
+      padding: 130px 0;
+      background: var(--cream);
+    }
+
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 100px;
+      align-items: start;
+    }
+
+    .philosophy-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .philosophy-label::before {
+      content: '';
+      display: block;
+      width: 20px; height: 1px;
+      background: var(--gold);
+    }
+
+    .philosophy-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8rem;
+      font-weight: 300;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--line);
+      line-height: 1;
+      user-select: none;
+    }
+
+    .philosophy-statement {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.4rem, 4vw, 4.8rem);
+      font-weight: 300;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 40px;
+    }
+    .philosophy-statement em { font-style: italic; color: var(--gold); }
+
+    .philosophy-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+    .philosophy-p {
+      font-size: 0.93rem;
+      color: var(--muted);
+      line-height: 1.88;
+    }
+    .philosophy-p strong { color: var(--text); font-weight: 600; }
+
+    /* ═══════════════════════════════════════════
+       SERVICES
+    ═══════════════════════════════════════════ */
+    .services-section {
+      padding: 100px 0 120px;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .services-section::before {
+      content: 'Services';
+      position: absolute;
+      right: -40px;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 9rem;
+      font-weight: 300;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(12,11,9,0.06);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: end;
+      margin-bottom: 72px;
+    }
+
+    .section-kicker {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .section-kicker::before {
+      content: '';
+      display: block;
+      width: 20px; height: 1px;
+      background: var(--gold);
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 3.8vw, 4.4rem);
+      font-weight: 300;
+      line-height: 1.04;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+    .section-title em { font-style: italic; color: var(--gold); }
+
+    .section-desc {
+      font-size: 0.93rem;
+      color: var(--muted);
+      line-height: 1.84;
+      max-width: 420px;
+      align-self: end;
+    }
+
+    /* Services grid */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .service-card {
+      background: var(--cream);
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.4s;
+      cursor: pointer;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .service-card:hover { background: var(--ink); }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-card:hover .svc-num { -webkit-text-stroke-color: rgba(250,248,244,0.1); }
+    .service-card:hover .svc-icon { color: var(--gold); }
+    .service-card:hover .svc-title { color: var(--cream); }
+    .service-card:hover .svc-body { color: rgba(250,248,244,0.55); }
+    .service-card:hover .svc-link { color: var(--gold); opacity: 1; }
+
+    .svc-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      font-weight: 300;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(12,11,9,0.12);
+      line-height: 1;
+      margin-bottom: 24px;
+      transition: -webkit-text-stroke-color 0.4s;
+      user-select: none;
+    }
+
+    .svc-icon {
+      color: var(--gold);
+      margin-bottom: 18px;
+      transition: color 0.4s;
+    }
+
+    .svc-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.55rem;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      margin-bottom: 12px;
+      transition: color 0.4s;
+    }
+
+    .svc-body {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.78;
+      transition: color 0.4s;
+      margin-bottom: 24px;
+    }
+
+    .svc-link {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.7;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.4s, opacity 0.4s;
+    }
+    .svc-link svg { transition: transform 0.25s; }
+    .svc-link:hover svg { transform: translateX(4px); }
+
+    /* ═══════════════════════════════════════════
+       WORK / PROJECTS
+    ═══════════════════════════════════════════ */
+    .work-section {
+      padding: 120px 0;
+      background: var(--cream);
+    }
+
+    .work-intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: end;
+      margin-bottom: 80px;
+    }
+
+    .work-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .project-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--surface);
+      aspect-ratio: 4/3;
+      cursor: pointer;
+    }
+    .project-card:first-child {
+      grid-column: span 2;
+      aspect-ratio: 16/7;
+    }
+
+    .project-visual {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.7s cubic-bezier(0.25, 0, 0, 1);
+    }
+    .project-card:hover .project-visual { transform: scale(1.04); }
+
+    /* Simulated website screenshot placeholder */
+    .proj-mock {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Fashion brand mock */
+    .mock-fashion {
+      background: linear-gradient(160deg, #1a1510 0%, #2d2620 50%, #0e0c08 100%);
+    }
+    .mock-fashion::before {
+      content: 'STYLEDBYLAYO';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 3.5vw, 2.8rem);
+      font-weight: 300;
+      letter-spacing: 0.4em;
+      color: rgba(212,176,124,0.7);
+      white-space: nowrap;
+    }
+    .mock-fashion::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 60%, rgba(26,21,16,0.8));
+    }
+    .mock-fashion-accent {
+      position: absolute;
+      top: 18%; right: 12%;
+      width: 30%; height: 55%;
+      border: 1px solid rgba(184,150,90,0.2);
+    }
+
+    /* Beauty mock */
+    .mock-beauty {
+      background: linear-gradient(145deg, #f7f0e9 0%, #ede0d4 60%, #e0cfc2 100%);
+    }
+    .mock-beauty::before {
+      content: 'GLAMSBYKIKI';
+      position: absolute;
+      top: 38%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(0.8rem, 2.5vw, 1.6rem);
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      color: rgba(100,70,55,0.7);
+      white-space: nowrap;
+    }
+
+    /* Luxury brand mock */
+    .mock-luxury {
+      background: linear-gradient(150deg, #0a0806 0%, #181410 50%, #22190f 100%);
+    }
+    .mock-luxury::before {
+      content: 'LUXEBY EXCEL';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(0.8rem, 2.2vw, 1.5rem);
+      font-weight: 300;
+      letter-spacing: 0.4em;
+      color: rgba(184,150,90,0.65);
+      white-space: nowrap;
+    }
+
+    /* TSH mock */
+    .mock-tsh {
+      background: linear-gradient(145deg, #061a30 0%, #0d2a4a 55%, #0a2040 100%);
+    }
+    .mock-tsh::before {
+      content: 'TWAYNE SAFE HAVEN';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(0.75rem, 2vw, 1.3rem);
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      color: rgba(90,173,128,0.7);
+      white-space: nowrap;
+    }
+
+    .project-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(12,11,9,0.88) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 36px 40px;
+    }
+    .project-card:hover .project-overlay { opacity: 1; }
+
+    .proj-tag {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .proj-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 2.8vw, 2.2rem);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: var(--cream);
+      margin-bottom: 16px;
+    }
+    .proj-arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(250,248,244,0.7);
+      transition: color 0.2s, gap 0.2s;
+    }
+    .project-card:hover .proj-arrow { color: var(--gold); gap: 14px; }
+
+    /* Labels on normal state */
+    .project-label {
+      position: absolute;
+      bottom: 20px;
+      left: 28px;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(250,248,244,0.45);
+      opacity: 1;
+      transition: opacity 0.3s;
+    }
+    .project-card:hover .project-label { opacity: 0; }
+
+    /* ═══════════════════════════════════════════
+       DEMOS SHOWCASE
+    ═══════════════════════════════════════════ */
+    .demos-section {
+      padding: 100px 0 120px;
+      background: var(--ink);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demos-section .section-kicker { color: var(--gold-lt); }
+    .demos-section .section-kicker::before { background: var(--gold-lt); }
+    .demos-section .section-title { color: var(--cream); }
+    .demos-section .section-title em { color: var(--gold); }
+    .demos-section .section-desc { color: rgba(250,248,244,0.5); }
+
+    .demos-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 64px;
+    }
+
+    .demo-tile {
+      position: relative;
+      background: var(--ink-soft);
+      border: 1px solid rgba(250,248,244,0.06);
+      padding: 36px 28px;
+      overflow: hidden;
+      transition: border-color 0.3s, background 0.3s;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .demo-tile::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .demo-tile:hover {
+      border-color: rgba(184,150,90,0.2);
+      background: rgba(250,248,244,0.03);
+    }
+    .demo-tile:hover::before { transform: scaleX(1); }
+
+    .demo-emoji {
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+    .demo-industry {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.7;
+    }
+    .demo-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.45rem;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      color: var(--cream);
+      line-height: 1.2;
+    }
+    .demo-desc {
+      font-size: 0.8rem;
+      color: rgba(250,248,244,0.4);
+      line-height: 1.72;
+      flex: 1;
+    }
+    .demo-link {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(250,248,244,0.35);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.25s, gap 0.25s;
+    }
+    .demo-tile:hover .demo-link { color: var(--gold); gap: 12px; }
+
+    /* ═══════════════════════════════════════════
+       PROCESS
+    ═══════════════════════════════════════════ */
+    .process-section {
+      padding: 120px 0;
+      background: var(--cream);
+    }
+
+    .process-list {
+      margin-top: 72px;
+      border-top: 1px solid var(--line);
+    }
+
+    .process-item {
+      display: grid;
+      grid-template-columns: 80px 1fr 2fr auto;
+      gap: 40px;
+      align-items: center;
+      padding: 36px 0;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .process-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--surface);
+      transform: translateX(-101%);
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .process-item:hover::before { transform: translateX(0); }
+    .process-item > * { position: relative; z-index: 1; }
+
+    .process-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--line);
+      line-height: 1;
+      transition: -webkit-text-stroke-color 0.3s;
+    }
+    .process-item:hover .process-num { -webkit-text-stroke-color: var(--gold-line); }
+
+    .process-step-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.55rem;
+      font-weight: 400;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+    }
+
+    .process-body {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .process-tag {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim);
+      border: 1px solid var(--line);
+      padding: 6px 14px;
+      white-space: nowrap;
+    }
+
+    /* ═══════════════════════════════════════════
+       TESTIMONIALS
+    ═══════════════════════════════════════════ */
+    .testimonials-section {
+      padding: 100px 0 120px;
+      background: var(--surface);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 64px;
+    }
+
+    .testimonial-card {
+      background: var(--cream);
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .testimonial-card::after {
+      content: '\201C';
+      position: absolute;
+      top: 20px; right: 28px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8rem;
+      font-weight: 300;
+      color: var(--gold-pale);
+      line-height: 1;
+      pointer-events: none;
+    }
+    .testimonial-card:hover { background: var(--surface-3); }
+
+    .testimonial-stars {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+    .star {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+
+    .testimonial-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--ink);
+      font-style: italic;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .testimonial-author strong {
+      display: block;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .testimonial-author span {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    /* ═══════════════════════════════════════════
+       ABOUT / FOUNDER
+    ═══════════════════════════════════════════ */
+    .about-section {
+      padding: 120px 0;
+      background: var(--cream);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: center;
+    }
+
+    .about-visual {
+      position: relative;
+    }
+
+    .about-frame {
+      aspect-ratio: 3/4;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+    .about-frame-inner {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(155deg, #1a1814 0%, #2a2620 60%, #1a1612 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .about-monogram {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8rem;
+      font-weight: 300;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(184,150,90,0.3);
+      letter-spacing: 0.1em;
+    }
+    .about-frame::before {
+      content: '';
+      position: absolute;
+      top: 16px; left: 16px; right: -16px; bottom: -16px;
+      border: 1px solid var(--gold-line);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .about-side-text {
+      position: absolute;
+      right: -120px;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--dim);
+      white-space: nowrap;
+    }
+
+    .about-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .about-label::before {
+      content: '';
+      display: block;
+      width: 20px; height: 1px;
+      background: var(--gold);
+    }
+
+    .about-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 5vw, 5rem);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .about-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 32px;
+    }
+
+    .about-bio {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.88;
+      margin-bottom: 20px;
+    }
+    .about-bio strong { color: var(--text); font-weight: 600; }
+
+    .about-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 32px;
+    }
+    .about-tag {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      padding: 7px 14px;
+    }
+
+    /* ═══════════════════════════════════════════
+       CONTACT CTA
+    ═══════════════════════════════════════════ */
+    .contact-section {
+      padding: 120px 0 140px;
+      background: var(--ink);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-section::before {
+      content: 'ROVOCHE';
+      position: absolute;
+      bottom: -0.1em;
+      left: -0.02em;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(120px, 20vw, 260px);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(250,248,244,0.04);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .contact-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .contact-kicker {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    .contact-kicker::before, .contact-kicker::after {
+      content: '';
+      display: block;
+      width: 40px; height: 1px;
+      background: var(--gold-line);
+    }
+
+    .contact-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 7vw, 7.5rem);
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      margin-bottom: 36px;
+    }
+    .contact-title em { font-style: italic; color: var(--gold); }
+
+    .contact-sub {
+      font-size: 0.95rem;
+      color: rgba(250,248,244,0.5);
+      line-height: 1.84;
+      max-width: 440px;
+      margin: 0 auto 52px;
+    }
+
+    .contact-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      background: rgba(250,248,244,0.05);
+      border: 1px solid rgba(250,248,244,0.1);
+      padding: 18px 28px;
+      min-width: 280px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .contact-link::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(184,150,90,0.08);
+      transform: translateX(-101%);
+      transition: transform 0.35s ease;
+    }
+    .contact-link:hover { border-color: var(--gold-line); }
+    .contact-link:hover::before { transform: translateX(0); }
+    .contact-link > * { position: relative; z-index: 1; }
+
+    .clink-meta span {
+      display: block;
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(250,248,244,0.35);
+      margin-bottom: 3px;
+    }
+    .clink-meta strong {
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--cream);
+    }
+    .clink-arrow {
+      color: var(--gold);
+      font-size: 1rem;
+      transition: transform 0.25s;
+    }
+    .contact-link:hover .clink-arrow { transform: translateX(4px); }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    footer {
+      background: var(--ink);
+      border-top: 1px solid rgba(250,248,244,0.07);
+      padding: 32px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      width: min(100% - 48px, var(--max));
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(250,248,244,0.5);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-logo-d {
+      width: 5px; height: 5px;
+      background: var(--gold);
+      transform: rotate(45deg);
+    }
+
+    .footer-mid {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: rgba(250,248,244,0.25);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+    .footer-links a {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(250,248,244,0.3);
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+
+    /* ═══════════════════════════════════════════
+       SCROLL REVEAL
+    ═══════════════════════════════════════════ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s cubic-bezier(0.25, 0, 0.1, 1),
+                  transform 0.8s cubic-bezier(0.25, 0, 0.1, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 1100px) {
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .demos-grid { grid-template-columns: repeat(2, 1fr); }
+      .philosophy-grid { grid-template-columns: 1fr; gap: 48px; }
+      .philosophy-number { display: none; }
+      .process-item { grid-template-columns: 60px 1fr 1.5fr auto; gap: 24px; }
+    }
+
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .section-head { grid-template-columns: 1fr; gap: 20px; }
+      .work-intro { grid-template-columns: 1fr; gap: 20px; }
+      .work-grid { grid-template-columns: 1fr; }
+      .project-card:first-child { grid-column: span 1; aspect-ratio: 4/3; }
+      .about-grid { grid-template-columns: 1fr; gap: 56px; }
+      .about-side-text { display: none; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .process-item { grid-template-columns: 50px 1fr; }
+      .process-item .process-body { display: none; }
+      .process-item .process-tag { display: none; }
+      .contact-link { min-width: 100%; }
+    }
+
+    @media (max-width: 680px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .mobile-nav { display: flex; }
+      .services-grid { grid-template-columns: 1fr; }
+      .demos-grid { grid-template-columns: 1fr 1fr; }
+      .philosophy-body { grid-template-columns: 1fr; gap: 24px; }
+      .hero-stats-row { gap: 20px; }
+    }
+
+    @media (max-width: 480px) {
+      .demos-grid { grid-template-columns: 1fr; }
+      .hero-stats-row { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- Loader -->
+  <div id="loader">
+    <div class="loader-wordmark">ROVOCHE</div>
+    <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+  </div>
+
+  <!-- Mobile nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#work">Work</a>
+    <a href="#services">Services</a>
+    <a href="#process">Process</a>
+    <a href="#about">Studio</a>
+    <a href="#contact" class="m-cta">Start a Project</a>
+  </div>
+
+  <!-- NAV -->
+  <nav id="mainNav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <span class="nav-logo-diamond"></span>
+        Rovoche
+      </a>
+      <div class="nav-links">
+        <a href="#work">Work</a>
+        <a href="#services">Services</a>
+        <a href="#process">Process</a>
+        <a href="#about">Studio</a>
+      </div>
+      <a href="#contact" class="nav-cta"><span>Start a Project</span></a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════ HERO ══════ -->
+  <section class="hero" aria-label="Hero">
+    <div class="hero-grid-lines" aria-hidden="true"></div>
+    <div class="hero-bg-text" aria-hidden="true">ROVOCHE</div>
+
+    <div class="hero-content">
+      <div class="hero-inner wrap">
+        <div>
+          <div class="hero-kicker">Premium Web Design Studio · Lagos, Nigeria</div>
+          <h1 class="hero-h1">
+            Digital presence,<br>
+            <em>crafted</em><br>
+            with precision.
+          </h1>
+        </div>
+        <div class="hero-right">
+          <p class="hero-sub">
+            Rovoche builds <strong>premium digital experiences</strong> for fashion houses, beauty brands, hospitality, gems & jewellery, and high-end service businesses across Nigeria and beyond.
+          </p>
+          <div class="hero-actions">
+            <a href="#work" class="btn-primary">
+              <span>View Our Work</span>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M2 7h10M7.5 2.5l5 4.5-5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <a href="#contact" class="btn-ghost">
+              Start a project
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M2 7h10M7.5 2.5l5 4.5-5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+          <div class="hero-stats-row">
+            <div class="hero-stat-item">
+              <div class="hero-stat-val">12<sup>+</sup></div>
+              <div class="hero-stat-label">Projects Delivered</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-val">8<sup>+</sup></div>
+              <div class="hero-stat-label">Industries Served</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-val">100<sup>%</sup></div>
+              <div class="hero-stat-label">Mobile-First Builds</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll" aria-hidden="true">
+      <span>Scroll</span>
+      <div class="hero-scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ══════ MARQUEE ══════ -->
+  <div class="marquee-section" aria-hidden="true">
+    <div class="marquee-track-wrap">
+      <div class="marquee-track" id="marqueeTrack">
+        <div class="marquee-item"><span class="marquee-diamond"></span> Fashion & Couture</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Gems & Jewellery</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Beauty & Aesthetics</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Hospitality</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Photography</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Event & Décor</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Med Spa & Wellness</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Home Remodeling</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Food & Restaurant</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Premium Retail</div>
+      </div>
+      <div class="marquee-track" aria-hidden="true">
+        <div class="marquee-item"><span class="marquee-diamond"></span> Fashion & Couture</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Gems & Jewellery</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Beauty & Aesthetics</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Hospitality</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Photography</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Event & Décor</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Med Spa & Wellness</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Home Remodeling</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Food & Restaurant</div>
+        <div class="marquee-item"><span class="marquee-diamond"></span> Premium Retail</div>
+      </div>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- ══════ PHILOSOPHY ══════ -->
+    <section class="philosophy-section" aria-label="Our Philosophy">
+      <div class="wrap">
+        <div class="philosophy-grid reveal">
+          <div>
+            <div class="philosophy-label">Our Belief</div>
+            <div class="philosophy-number" aria-hidden="true">01</div>
+          </div>
+          <div>
+            <h2 class="philosophy-statement">
+              Every brand deserves a digital presence that feels as <em>exceptional</em> as the product itself.
+            </h2>
+            <div class="philosophy-body">
+              <p class="philosophy-p">
+                Nigeria's premium market has grown — its online presence hasn't kept pace. <strong>Rovoche exists to change that.</strong> We build for brands that understand the difference between a website and a digital experience.
+              </p>
+              <p class="philosophy-p">
+                From Lagos to the world stage, the brands we build for carry something distinct. Our work is shaped to carry that distinctness forward — in every scroll, every hover, every moment of contact.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════ SERVICES ══════ -->
+    <section class="services-section" id="services" aria-label="Services">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">What We Build</div>
+            <h2 class="section-title">
+              Crafted for<br>
+              <em>every industry</em>
+            </h2>
+          </div>
+          <p class="section-desc">
+            Whether you are a Lagos couture house, a jewellery atelier, a beauty studio, or a premium hospitality brand — Rovoche builds digital presence that commands attention.
+          </p>
+        </div>
+
+        <div class="services-grid">
+
+          <div class="service-card reveal reveal-delay-1" tabindex="0">
+            <div class="svc-num" aria-hidden="true">01</div>
+            <div class="svc-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M3 7h18M3 12h14M3 17h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                <circle cx="19" cy="17" r="3" stroke="currentColor" stroke-width="1.4"/>
+              </svg>
+            </div>
+            <h3 class="svc-title">Brand Websites</h3>
+            <p class="svc-body">Bespoke single-page or multi-page sites that speak the language of your brand — from architecture to copy to the finest micro-interactions.</p>
+            <div class="svc-link">
+              Learn more
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+          <div class="service-card reveal reveal-delay-2" tabindex="0">
+            <div class="svc-num" aria-hidden="true">02</div>
+            <div class="svc-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <polygon points="12,2 15,9 22,9 16.5,14 18.5,21 12,17 5.5,21 7.5,14 2,9 9,9" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="svc-title">Gems & Jewellery</h3>
+            <p class="svc-body">Digital showcases for jewellers, stone dealers, and luxury accessory brands. Sites that reflect the brilliance, rarity, and craftsmanship of your pieces.</p>
+            <div class="svc-link">
+              Learn more
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+          <div class="service-card reveal reveal-delay-3" tabindex="0">
+            <div class="svc-num" aria-hidden="true">03</div>
+            <div class="svc-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.4"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="svc-title">Fashion & Couture</h3>
+            <p class="svc-body">Editorial-grade digital homes for designers and fashion houses. Cinematic, intentional, and built to make the garment the star of every page.</p>
+            <div class="svc-link">
+              Learn more
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+          <div class="service-card reveal reveal-delay-1" tabindex="0">
+            <div class="svc-num" aria-hidden="true">04</div>
+            <div class="svc-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2C8.5 2 6 4.5 6 7c0 5 6 13 6 13s6-8 6-13c0-2.5-2.5-5-6-5z" stroke="currentColor" stroke-width="1.4"/>
+                <circle cx="12" cy="7" r="2" stroke="currentColor" stroke-width="1.4"/>
+              </svg>
+            </div>
+            <h3 class="svc-title">Beauty & Aesthetics</h3>
+            <p class="svc-body">Polished, sensory-first websites for makeup artists, skincare brands, med spas, and salons — designed to convey luxury before a word is read.</p>
+            <div class="svc-link">
+              Learn more
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+          <div class="service-card reveal reveal-delay-2" tabindex="0">
+            <div class="svc-num" aria-hidden="true">05</div>
+            <div class="svc-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="7" width="20" height="13" rx="2" stroke="currentColor" stroke-width="1.4"/>
+                <path d="M7 7V5a5 5 0 0110 0v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="svc-title">Hospitality & Events</h3>
+            <p class="svc-body">From boutique hotels to event studios, we create immersive digital environments that sell the experience before a booking is made.</p>
+            <div class="svc-link">
+              Learn more
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+          <div class="service-card reveal reveal-delay-3" tabindex="0">
+            <div class="svc-num" aria-hidden="true">06</div>
+            <div class="svc-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="svc-title">Redesigns & Elevations</h3>
+            <p class="svc-body">Your current site doesn't reflect where your brand stands today. We rebuild it — same business, elevated presence, sharpened positioning.</p>
+            <div class="svc-link">
+              Learn more
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════ WORK ══════ -->
+    <section class="work-section" id="work" aria-label="Our Work">
+      <div class="wrap">
+        <div class="work-intro reveal">
+          <div>
+            <div class="section-kicker">Selected Work</div>
+            <h2 class="section-title">
+              Built for brands<br>
+              <em>that mean it.</em>
+            </h2>
+          </div>
+          <p class="section-desc">
+            Live websites built for real Nigerian brands — each one a bespoke exercise in digital craft.
+          </p>
+        </div>
+
+        <div class="work-grid">
+
+          <!-- Hero project: Styledbylayo -->
+          <div class="project-card reveal">
+            <div class="project-visual">
+              <div class="proj-mock mock-fashion">
+                <div class="mock-fashion-accent"></div>
+              </div>
+            </div>
+            <div class="project-label">Fashion</div>
+            <div class="project-overlay">
+              <div class="proj-tag">Fashion & Couture · Lagos</div>
+              <div class="proj-title">Styledbylayo</div>
+              <a href="#" class="proj-arrow">
+                View Project
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7.5 2.5l5 4.5-5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Glamsbykiki -->
+          <div class="project-card reveal reveal-delay-1">
+            <div class="project-visual">
+              <div class="proj-mock mock-beauty"></div>
+            </div>
+            <div class="project-label">Beauty</div>
+            <div class="project-overlay">
+              <div class="proj-tag">Beauty & Makeup · Lagos</div>
+              <div class="proj-title">Glamsbykiki</div>
+              <a href="#" class="proj-arrow">
+                View Project
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7.5 2.5l5 4.5-5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Luxeby Excel -->
+          <div class="project-card reveal reveal-delay-2">
+            <div class="project-visual">
+              <div class="proj-mock mock-luxury"></div>
+            </div>
+            <div class="project-label">Beauty</div>
+            <div class="project-overlay">
+              <div class="proj-tag">Luxury Beauty · Lagos</div>
+              <div class="proj-title">Luxeby Excel</div>
+              <a href="#" class="proj-arrow">
+                View Project
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7.5 2.5l5 4.5-5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- TSH -->
+          <div class="project-card reveal reveal-delay-3">
+            <div class="project-visual">
+              <div class="proj-mock mock-tsh"></div>
+            </div>
+            <div class="project-label">NGO</div>
+            <div class="project-overlay">
+              <div class="proj-tag">Community NGO · Nigeria</div>
+              <div class="proj-title">Twayne Safe Haven</div>
+              <a href="https://www.twaynesafehaven.org/" target="_blank" rel="noopener noreferrer" class="proj-arrow">
+                Visit Live Site
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7.5 2.5l5 4.5-5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════ DEMOS ══════ -->
+    <section class="demos-section" id="demos" aria-label="Industry Demos">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">Demo Concepts</div>
+            <h2 class="section-title">
+              8 industries.<br>
+              <em>One standard.</em>
+            </h2>
+          </div>
+          <p class="section-desc">
+            Not sure what your site could look like? Browse these fully built demo sites — real pages, not mockups.
+          </p>
+        </div>
+
+        <div class="demos-grid">
+
+          <a class="demo-tile reveal reveal-delay-1" href="./photography/" target="_blank" rel="noopener">
+            <div class="demo-emoji">📷</div>
+            <div class="demo-industry">Photography</div>
+            <div class="demo-name">Photography Studio</div>
+            <p class="demo-desc">Portfolio gallery, session types, and a visual-first layout built to showcase the craft.</p>
+            <div class="demo-link">
+              View Demo
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </a>
+
+          <a class="demo-tile reveal reveal-delay-2" href="./food-restaurant/" target="_blank" rel="noopener">
+            <div class="demo-emoji">🍽️</div>
+            <div class="demo-industry">Food & Dining</div>
+            <div class="demo-name">Restaurant & Food</div>
+            <p class="demo-desc">Menu highlights, booking CTA, and an atmosphere that makes guests hungry before they arrive.</p>
+            <div class="demo-link">
+              View Demo
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </a>
+
+          <a class="demo-tile reveal reveal-delay-3" href="./med-spa/" target="_blank" rel="noopener">
+            <div class="demo-emoji">💆</div>
+            <div class="demo-industry">Med Spa & Wellness</div>
+            <div class="demo-name">Med Spa & Wellness</div>
+            <p class="demo-desc">Treatments, booking, and a premium visual language that earns trust before a consultation.</p>
+            <div class="demo-link">
+              View Demo
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </a>
+
+          <a class="demo-tile reveal reveal-delay-4" href="./event-decor/" target="_blank" rel="noopener">
+            <div class="demo-emoji">🎉</div>
+            <div class="demo-industry">Events & Décor</div>
+            <div class="demo-name">Event & Décor Studio</div>
+            <p class="demo-desc">Event styling, gallery, consultation flow, and social proof — built to convert enquiries.</p>
+            <div class="demo-link">
+              View Demo
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </a>
+
+          <a class="demo-tile reveal reveal-delay-1" href="./remodeling/" target="_blank" rel="noopener">
+            <div class="demo-emoji">🏠</div>
+            <div class="demo-industry">Home & Interiors</div>
+            <div class="demo-name">Home Remodeling</div>
+            <p class="demo-desc">Project galleries, service tiers, and booking — crafted for interior and renovation brands.</p>
+            <div class="demo-link">
+              View Demo
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </a>
+
+          <div class="demo-tile reveal reveal-delay-2" style="cursor:default;">
+            <div class="demo-emoji">💎</div>
+            <div class="demo-industry">Gems & Jewellery</div>
+            <div class="demo-name">Jewellery Atelier</div>
+            <p class="demo-desc">A bespoke showcase for fine jewellery brands — launching soon. Get in touch to be first.</p>
+            <div class="demo-link" style="color: var(--gold); opacity: 0.5;">
+              Coming Soon
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+          <a class="demo-tile reveal reveal-delay-3" href="./photography/" target="_blank" rel="noopener">
+            <div class="demo-emoji">✨</div>
+            <div class="demo-industry">Beauty & Glam</div>
+            <div class="demo-name">Beauty Studio</div>
+            <p class="demo-desc">Glam, polished, and conversion-focused — for makeup artists, skin clinics, and hair studios.</p>
+            <div class="demo-link">
+              View Demo
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </a>
+
+          <a class="demo-tile reveal reveal-delay-4" href="./food-restaurant/" target="_blank" rel="noopener">
+            <div class="demo-emoji">🏨</div>
+            <div class="demo-industry">Hospitality</div>
+            <div class="demo-name">Boutique Hotel</div>
+            <p class="demo-desc">Immersive presentation for hotels, guesthouses, and short-let apartments across Nigeria.</p>
+            <div class="demo-link">
+              View Demo
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════ PROCESS ══════ -->
+    <section class="process-section" id="process" aria-label="Our Process">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">How We Work</div>
+            <h2 class="section-title">
+              Considered at<br>
+              <em>every step.</em>
+            </h2>
+          </div>
+          <p class="section-desc">
+            From first conversation to final delivery — our process is unhurried, precise, and entirely focused on getting the result right.
+          </p>
+        </div>
+
+        <div class="process-list">
+
+          <div class="process-item reveal">
+            <div class="process-num" aria-hidden="true">01</div>
+            <div class="process-step-title">Discovery</div>
+            <p class="process-body">We begin with a thorough understanding of your brand — your audience, your aesthetic, your ambition. Nothing is assumed. Everything is asked.</p>
+            <div class="process-tag">Brand Alignment</div>
+          </div>
+
+          <div class="process-item reveal reveal-delay-1">
+            <div class="process-num" aria-hidden="true">02</div>
+            <div class="process-step-title">Architecture</div>
+            <p class="process-body">We map the structure, information flow, and visual hierarchy before a single element is designed. Form follows strategy.</p>
+            <div class="process-tag">Structure & Strategy</div>
+          </div>
+
+          <div class="process-item reveal reveal-delay-2">
+            <div class="process-num" aria-hidden="true">03</div>
+            <div class="process-step-title">Design & Build</div>
+            <p class="process-body">The site is designed and built in code — clean, hand-crafted HTML, CSS, and JavaScript. No page builders. No shortcuts. Pixel-precise on every screen.</p>
+            <div class="process-tag">Precision Craft</div>
+          </div>
+
+          <div class="process-item reveal reveal-delay-3">
+            <div class="process-num" aria-hidden="true">04</div>
+            <div class="process-step-title">Refinement</div>
+            <p class="process-body">You review. We refine. Until every detail feels exactly right — from the headline to the smallest hover state. Then and only then, it goes live.</p>
+            <div class="process-tag">Polish & Launch</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════ TESTIMONIALS ══════ -->
+    <section class="testimonials-section" aria-label="Client Testimonials">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">Client Words</div>
+            <h2 class="section-title">
+              What our<br>
+              <em>clients say.</em>
+            </h2>
+          </div>
+          <p class="section-desc">
+            Real feedback from the brands and founders we've had the privilege of building with.
+          </p>
+        </div>
+
+        <div class="testimonials-grid">
+
+          <article class="testimonial-card reveal">
+            <div class="testimonial-stars">
+              <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+            </div>
+            <p class="testimonial-quote">"Rovoche turned our fashion story into a website that feels elegant, clear, and ready for serious customers. The structure made our offer easier to understand."</p>
+            <div class="testimonial-author">
+              <strong>Hannah</strong>
+              <span>Peasis Fashion · Lagos</span>
+            </div>
+          </article>
+
+          <article class="testimonial-card reveal reveal-delay-1">
+            <div class="testimonial-stars">
+              <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+            </div>
+            <p class="testimonial-quote">"The final result felt sharper than what we had in mind. They understood the goal quickly and shaped the site around trust, clarity, and the look of a premium brand."</p>
+            <div class="testimonial-author">
+              <strong>Michael</strong>
+              <span>Herkimer Capital · Abuja</span>
+            </div>
+          </article>
+
+          <article class="testimonial-card reveal reveal-delay-2">
+            <div class="testimonial-stars">
+              <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+            </div>
+            <p class="testimonial-quote">"The redesign finally made our online presence match the quality of our offline work. The attention to detail in the mobile experience alone was worth every naira."</p>
+            <div class="testimonial-author">
+              <strong>Segun</strong>
+              <span>ValueIQX · Lagos</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════ ABOUT ══════ -->
+    <section class="about-section" id="about" aria-label="About the Studio">
+      <div class="wrap">
+        <div class="about-grid">
+
+          <div class="about-visual reveal">
+            <div class="about-frame">
+              <div class="about-frame-inner">
+                <div class="about-monogram">SF</div>
+              </div>
+            </div>
+            <div class="about-side-text" aria-hidden="true">Founder · Web Designer · Lagos, Nigeria</div>
+          </div>
+
+          <div class="reveal reveal-delay-2">
+            <div class="about-label">The Studio</div>
+            <h2 class="about-name">Sammie<br>Friday</h2>
+            <div class="about-title">Founder & Creative Director, Rovoche</div>
+            <p class="about-bio">
+              I've spent over a decade building communities, running programmes, and helping Nigerian organisations communicate with clarity and intention. <strong>That experience is embedded in every website I build.</strong>
+            </p>
+            <p class="about-bio">
+              Rovoche was born from a simple observation: <strong>Nigeria's premium brands deserve premium digital presence.</strong> Not template-built approximations — but bespoke, handcrafted websites that carry real brand character, built to work beautifully on every device.
+            </p>
+            <div class="about-tags">
+              <span class="about-tag">HTML · CSS · JS</span>
+              <span class="about-tag">Brand Strategy</span>
+              <span class="about-tag">Lagos, Nigeria</span>
+              <span class="about-tag">Mobile-First</span>
+              <span class="about-tag">10+ Years Experience</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════ CONTACT ══════ -->
+    <section class="contact-section" id="contact" aria-label="Start a Project">
+      <div class="contact-inner wrap">
+        <div class="contact-kicker reveal">Begin a Conversation</div>
+        <h2 class="contact-title reveal">
+          Let's build<br>
+          something <em>worthy</em><br>
+          of your brand.
+        </h2>
+        <p class="contact-sub reveal">
+          Tell us about your brand, your vision, and what you're building toward. We'll take it from there.
+        </p>
+        <div class="contact-links reveal">
+          <a class="contact-link" href="mailto:sammietwyne@gmail.com">
+            <div class="clink-meta">
+              <span>Email Us</span>
+              <strong>sammietwyne@gmail.com</strong>
+            </div>
+            <span class="clink-arrow">→</span>
+          </a>
+          <a class="contact-link" href="https://www.linkedin.com/in/samuelefriday/" target="_blank" rel="noopener noreferrer">
+            <div class="clink-meta">
+              <span>LinkedIn</span>
+              <strong>Sammie Friday</strong>
+            </div>
+            <span class="clink-arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <div class="footer-logo-d"></div>
+        Rovoche
+      </div>
+      <div class="footer-mid">© 2026 — Premium web design studio, Lagos, Nigeria.</div>
+      <div class="footer-links">
+        <a href="mailto:sammietwyne@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/samuelefriday/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="#work">Work</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Loader ── */
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loader').classList.add('gone');
+      }, 2800);
+    });
+
+    /* ── Custom Cursor ── */
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left  = mx + 'px';
+      dot.style.top   = my + 'px';
+    });
+
+    function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    document.querySelectorAll('a, button, .service-card, .project-card, .demo-tile').forEach(el => {
+      el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+      el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+    });
+
+    /* ── Nav scroll behavior ── */
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    /* ── Hamburger / Mobile nav ── */
+    const hamburger  = document.getElementById('hamburger');
+    const mobileNav  = document.getElementById('mobileNav');
+
+    hamburger.addEventListener('click', () => {
+      const open = mobileNav.classList.toggle('open');
+      hamburger.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    mobileNav.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        mobileNav.classList.remove('open');
+        hamburger.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        mobileNav.classList.remove('open');
+        hamburger.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+
+    /* ── Scroll reveal ── */
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    } else {
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+    }
+
+    /* ── Smooth anchor scroll ── */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
