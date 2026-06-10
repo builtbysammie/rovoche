@@ -7,11 +7,11 @@
   <meta name="description" content="Digital foundations for brands that intend to last.">
   
   <!-- Favicon & Social Share Images -->
-  <link rel="icon" type="image/png" href="ROVOCHE-FAVICON.png">
+  <link rel="icon" type="image/png" href="ROVOCHÉ-FAVICON.png">
   <meta property="og:title" content="ROVOCHÉ Studio">
   <meta property="og:description" content="Digital foundations for brands that intend to last.">
-  <meta property="og:image" content="ROVOCHE-SOCIAL-IMAGE.png">
-  <meta name="twitter:image" content="ROVOCHE-SOCIAL-IMAGE.png">
+  <meta property="og:image" content="ROVOCHÉ-SOCIAL-IMAGE.png">
+  <meta name="twitter:image" content="ROVOCHÉ-SOCIAL-IMAGE.png">
 
   <!-- Minimalist Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,21 +20,22 @@
 
   <style>
     :root {
-      --stone-white: #F5F4F0;
-      --limestone: #EBEAE4;
-      --charcoal: #151616;
-      --slate-grey: #6E706E;
-      --bronze: #A39379;
-      --line-color: rgba(21, 22, 22, 0.08);
+      --bg-dark: #151616;
+      --panel-dark: #1C1D1D;
+      --stone-white: #E2E1DA;
+      --slate-grey: #8A8C8A;
+      --bronze: #C4B59D;
+      --line-color: rgba(226, 225, 218, 0.08);
     }
 
     /* Architectural Layout Grid Settings */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; font-size: 16px; background: var(--stone-white); color: var(--charcoal); }
+    html { scroll-behavior: smooth; font-size: 16px; background: var(--bg-dark); color: var(--stone-white); }
     body {
       font-family: 'Jost', sans-serif;
       font-weight: 300;
       line-height: 1.6;
+      background: var(--bg-dark);
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
@@ -53,6 +54,58 @@
     }
     @media (max-width: 768px) {
       .grid-container { padding: 0 20px; }
+    }
+
+    /* Cinematic Intro Preloader */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-dark);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
+    }
+    .preloader-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.4;
+    }
+    .preloader-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      width: 240px;
+    }
+    .preloader-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .preloader-bar-wrap {
+      width: 100%;
+      height: 1px;
+      background: rgba(226, 225, 218, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .preloader-bar {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 0%;
+      background: var(--bronze);
+      transition: width 4.5s cubic-bezier(0.1, 0.85, 0.25, 1);
+    }
+    #preloader.dismissed {
+      transform: translate3d(0, -100%, 0);
     }
 
     /* Navigation */
@@ -85,7 +138,7 @@
       transition: color 0.4s ease;
     }
     .nav-links a:hover {
-      color: var(--charcoal);
+      color: var(--stone-white);
     }
     @media (max-width: 768px) {
       header { padding: 32px 20px; }
@@ -107,20 +160,21 @@
       position: absolute;
       inset: 0;
       z-index: -1;
-      background: var(--limestone);
+      background: var(--bg-dark);
       overflow: hidden;
     }
     .hero-video {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      opacity: 0.55;
       transform: scale(1.02);
       will-change: transform;
     }
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(245,244,240,0.4) 0%, rgba(245,244,240,0.0) 50%, rgba(245,244,240,0.85) 100%);
+      background: linear-gradient(180deg, rgba(21,22,22,0.4) 0%, rgba(21,22,22,0.0) 50%, rgba(21,22,22,0.9) 100%);
     }
     .hero-headline {
       grid-column: 1 / 10;
@@ -148,7 +202,7 @@
       font-size: 0.65rem;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: var(--charcoal);
+      color: var(--stone-white);
     }
     @media (max-width: 768px) {
       #hero { padding: 120px 0 40px 0; }
@@ -171,7 +225,7 @@
     /* Selected Work Section */
     #work {
       padding: 140px 0;
-      background: var(--stone-white);
+      background: var(--bg-dark);
     }
     .work-list {
       grid-column: 1 / 13;
@@ -190,6 +244,7 @@
       grid-column: 1 / 2;
       font-size: 0.65rem;
       color: var(--slate-grey);
+      position: relative; z-index: 2;
     }
     .work-meta {
       grid-column: 2 / 6;
@@ -197,12 +252,14 @@
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--slate-grey);
+      position: relative; z-index: 2;
     }
     .work-title {
       grid-column: 6 / 12;
       font-family: 'Playfair Display', serif;
       font-size: clamp(1.5rem, 2.5vw, 2.2rem);
       font-weight: 400;
+      position: relative; z-index: 2;
       transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     }
     .work-item:hover .work-title {
@@ -210,7 +267,7 @@
       color: var(--bronze);
     }
     
-    /* Architectural Inline Preview Window Container */
+    /* Premium Hover & Mobile Ambient Card Frame */
     .peek-container {
       position: absolute;
       right: 8%;
@@ -221,9 +278,9 @@
       opacity: 0;
       pointer-events: none;
       overflow: hidden;
-      background: var(--limestone);
+      background: var(--panel-dark);
       transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-      box-shadow: 0 16px 32px rgba(21, 22, 22, 0.06);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5);
     }
     .peek-container img {
       width: 100%;
@@ -236,20 +293,44 @@
     }
 
     @media (max-width: 900px) {
-      .work-item { padding: 24px 0; }
+      .work-item { padding: 40px 0; }
       .work-meta { grid-column: 3 / 6; }
       .work-title { grid-column: 6 / 13; }
       .peek-container { display: none; }
     }
-    @media (max-width: 600px) {
-      .work-meta { display: none; }
-      .work-title { grid-column: 3 / 13; }
+    
+    /* Mobile-Specific Premium Inline Preview Framework */
+    @media (max-width: 768px) {
+      .work-item {
+        grid-template-columns: repeat(4, 1fr);
+        padding: 56px 20px;
+        margin-bottom: 12px;
+        overflow: hidden;
+        background: var(--panel-dark);
+        border-bottom: none;
+      }
+      .work-index { grid-column: 1 / 2; }
+      .work-meta { display: block; grid-column: 1 / 5; margin-top: 12px; order: 3; }
+      .work-title { grid-column: 1 / 5; font-size: 1.6rem; order: 2; }
+      
+      .peek-container {
+        display: block;
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        transform: none;
+        top: 0; right: 0; bottom: 0; left: 0;
+        opacity: 0.12; /* Subtle, expensive raw texture footprint */
+        z-index: 1;
+        transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+      }
     }
 
     /* Minimalist Studio Profile */
     #studio {
       padding: 140px 0;
-      background: var(--limestone);
+      background: var(--panel-dark);
     }
     .studio-statement {
       grid-column: 1 / 7;
@@ -257,7 +338,7 @@
       font-size: clamp(1.6rem, 3.5vw, 2.8rem);
       line-height: 1.3;
       font-weight: 400;
-      color: var(--charcoal);
+      color: var(--stone-white);
       padding-right: 40px;
     }
     .studio-details {
@@ -276,19 +357,19 @@
       font-size: 0.65rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--charcoal);
+      color: var(--stone-white);
     }
     .studio-media {
       grid-column: 1 / 13;
       height: 50vh;
       margin-top: 64px;
       overflow: hidden;
-      background: var(--stone-white);
     }
     .studio-media video {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      opacity: 0.7;
     }
 
     @media (max-width: 850px) {
@@ -297,10 +378,35 @@
       .studio-media { height: 35vh; margin-top: 40px; }
     }
 
-    /* Core Architectural Capabilities Block */
+    /* Core Architectural Capabilities Block — Video Fluid Canvas */
     #services {
+      position: relative;
       padding: 140px 0;
-      background: var(--stone-white);
+      background: var(--bg-dark);
+      overflow: hidden;
+    }
+    .services-bg-container {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .services-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.12; /* Subtle structural movement */
+      filter: grayscale(100%);
+      will-change: transform;
+    }
+    .services-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(21,22,22,0.7) 50%, var(--bg-dark) 100%);
+    }
+    #services .grid-container {
+      position: relative;
+      z-index: 2;
     }
     .services-intro {
       grid-column: 1 / 5;
@@ -324,11 +430,11 @@
     .service-title {
       font-size: 1.1rem;
       font-weight: 400;
-      color: var(--charcoal);
+      color: var(--stone-white);
       margin-bottom: 8px;
     }
     .service-annotation {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: var(--slate-grey);
       max-width: 480px;
     }
@@ -341,9 +447,10 @@
     /* Call to Action Framework */
     #action {
       padding: 160px 0;
-      background: var(--charcoal);
+      background: var(--bg-dark);
       color: var(--stone-white);
       text-align: center;
+      border-top: 1px solid var(--line-color);
     }
     .action-wrap {
       grid-column: 3 / 11;
@@ -363,20 +470,20 @@
       letter-spacing: 0.3em;
       text-transform: uppercase;
       padding: 16px 40px;
-      border: 1px solid rgba(245, 244, 240, 0.25);
+      border: 1px solid rgba(226, 225, 218, 0.25);
       border-radius: 0px;
       transition: border-color 0.4s ease, background-color 0.4s ease, color 0.4s ease;
     }
     .action-btn:hover {
       border-color: var(--stone-white);
       background: var(--stone-white);
-      color: var(--charcoal);
+      color: var(--bg-dark);
     }
     .action-mail {
       margin-top: 48px;
       font-size: 0.75rem;
       letter-spacing: 0.15em;
-      color: rgba(245, 244, 240, 0.4);
+      color: rgba(226, 225, 218, 0.4);
       transition: color 0.3s ease;
     }
     .action-mail:hover {
@@ -389,13 +496,13 @@
 
     /* Editorial Footer Layout */
     footer {
-      background: var(--charcoal);
-      color: rgba(245, 244, 240, 0.4);
+      background: var(--bg-dark);
+      color: rgba(226, 225, 218, 0.3);
       padding: 64px 0;
       font-size: 0.6rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      border-top: 1px solid rgba(245, 244, 240, 0.05);
+      border-top: 1px solid var(--line-color);
     }
     .footer-left {
       grid-column: 1 / 6;
@@ -423,6 +530,19 @@
   </style>
 </head>
 <body>
+
+  <!-- Cinematic Cinematic Film Intro Preloader Section -->
+  <div id="preloader">
+    <video class="preloader-video" id="intro-video" muted playsinline preload="auto">
+      <source src="rov-2.mp4" type="video/mp4">
+    </video>
+    <div class="preloader-content">
+      <div class="preloader-logo">ROVOCHÉ</div>
+      <div class="preloader-bar-wrap">
+        <div class="preloader-bar" id="load-bar"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- Navigation Grid Element -->
   <header>
@@ -508,7 +628,7 @@
   <!-- Studio Formulation Panel -->
   <section id="studio">
     <div class="grid-container">
-      <div class="section-label" style="border-bottom-color: rgba(21, 22, 22, 0.15);">The Studio Profile</div>
+      <div class="section-label" style="border-bottom-color: rgba(226, 225, 218, 0.15);">The Studio Profile</div>
       
       <h2 class="studio-statement reveal-item">
         Strong brands are rarely accidental. Every decision. Every detail. Every surface. Deliberate.
@@ -530,8 +650,15 @@
     </div>
   </section>
 
-  <!-- Capability Specifications List -->
+  <!-- Capability Specifications List with Deep Fluid Video Canvas Background -->
   <section id="services">
+    <div class="services-bg-container">
+      <video class="services-video" id="services-parallax-bg" autoplay muted loop playsinline preload="auto">
+        <source src="rov-2.mp4" type="video/mp4">
+      </video>
+      <div class="services-overlay"></div>
+    </div>
+
     <div class="grid-container">
       <div class="section-label">Capabilities Blueprint</div>
       
@@ -588,17 +715,59 @@
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       
-      // ── SYSTEM 1: HARDWARE-ACCELERATED HERO SCROLL PARALLAX ──
+      // ── SYSTEM 1: CINEMATIC INTRO ENGINE (LAST 5 SECONDS LOOKAHEAD) ──
+      const introVid = document.getElementById('intro-video');
+      const loadBar = document.getElementById('load-bar');
+      const preloader = document.getElementById('preloader');
+
+      introVid.addEventListener('loadedmetadata', function() {
+        // Set playback head directly to the final 5-second marker sequence
+        const duration = introVid.duration;
+        if(duration > 5) {
+          introVid.currentTime = duration - 5;
+        }
+        introVid.play();
+        
+        // Trigger structural load bar animation inline
+        requestAnimationFrame(() => {
+          loadBar.style.width = "100%";
+        });
+      });
+
+      // Clear intro layer systematically after processing loop
+      setTimeout(() => {
+        preloader.classList.add('dismissed');
+      }, 4500);
+
+
+      // ── SYSTEM 2: HARDWARE-ACCELERATED SCROLL PARALLAX ──
       const bgVideo = document.getElementById('parallax-bg');
+      const servicesBgVideo = document.getElementById('services-parallax-bg');
+      
       window.addEventListener('scroll', function() {
+        let scrollOffset = window.pageYOffset;
+        
         if (window.innerWidth > 768) {
-          let scrollOffset = window.pageYOffset;
-          // Clean subtle matrix scaling calculation
           bgVideo.style.transform = 'translate3d(0, ' + (scrollOffset * 0.35) + 'px, 0) scale(1.02)';
+          servicesBgVideo.style.transform = 'translate3d(0, ' + ((scrollOffset - servicesBgVideo.offsetTop) * 0.15) + 'px, 0) scale(1.05)';
+        } else {
+          // Mobile Smooth Parallax Translation for Portfolio Preview Layers
+          const mobileItems = document.querySelectorAll('.work-item');
+          mobileItems.forEach(item => {
+            const bounding = item.getBoundingClientRect();
+            if (bounding.top < window.innerHeight && bounding.bottom > 0) {
+              const innerPeek = item.querySelector('.peek-container');
+              const scrollSpeedFactor = (window.innerHeight / 2 - bounding.top) * 0.12;
+              if(innerPeek) {
+                innerPeek.style.transform = 'translate3d(0, ' + (scrollSpeedFactor - 20) + 'px, 0)';
+              }
+            }
+          });
         }
       }, { passive: true });
 
-      // ── SYSTEM 2: INTERACTIVE NATURAL DEPTH ENGINE (DESKTOP) ──
+
+      // ── SYSTEM 3: INTERACTIVE DESKTOP DEPTH MOUSE ENGINE ──
       if (window.innerWidth > 1024) {
         document.querySelectorAll('.work-item').forEach(item => {
           item.addEventListener('mousemove', function(e) {
@@ -607,7 +776,6 @@
               const bounds = item.getBoundingClientRect();
               const relativeX = e.clientX - bounds.left;
               const normalizedMove = (relativeX / bounds.width - 0.5) * 35;
-              // Clean natural slide translation values based on horizontal hover behavior
               peek.style.transform = 'translate3d(' + normalizedMove + 'px, -50%, 0) scale(1)';
             }
           });
@@ -618,25 +786,9 @@
         });
       }
 
-      // ── SYSTEM 3: RESPONSIVE MOTION HANDLING FOR MOBILE DEVICES ──
-      if (window.innerWidth <= 768) {
-        window.addEventListener('scroll', function() {
-          const depthElements = document.querySelectorAll('.reveal-item');
-          depthElements.forEach(el => {
-            const elBounds = el.getBoundingClientRect();
-            if (elBounds.top < window.innerHeight && elBounds.bottom > 0) {
-              const centerDelta = (window.innerHeight / 2) - (elBounds.top + elBounds.height / 2);
-              const dynamicShift = centerDelta * 0.05;
-              if (el.classList.contains('visible')) {
-                el.style.transform = 'translate3d(0, ' + dynamicShift + 'px, 0)';
-              }
-            }
-          });
-        }, { passive: true });
-      }
 
       // ── SYSTEM 4: CACHED HIGH-PERFORMANCE INTERSECTION OBSERVER ──
-      const observerSettings = { threshold: 0.1, rootMargin: "0px 0px -40px 0px" };
+      const observerSettings = { threshold: 0.05, rootMargin: "0px 0px -20px 0px" };
       const viewportObserver = new IntersectionObserver(function(elements, observer) {
         elements.forEach(el => {
           if (el.isIntersecting) {
