@@ -6,14 +6,12 @@
   <title>ROVOCHÉ Studio</title>
   <meta name="description" content="Digital foundations for brands that intend to last.">
   
-  <!-- Favicon & Social Share Images -->
   <link rel="icon" type="image/png" href="ROVOCHE-FAVICON.png">
   <meta property="og:title" content="ROVOCHÉ Studio">
   <meta property="og:description" content="Digital foundations for brands that intend to last.">
   <meta property="og:image" content="ROVOCHE-SOCIAL-IMAGE.png">
   <meta name="twitter:image" content="ROVOCHE-SOCIAL-IMAGE.png">
 
-  <!-- Minimalist Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
@@ -56,7 +54,7 @@
       .grid-container { padding: 0 20px; }
     }
 
-    /* Cinematic Film Intro Preloader Layer */
+    /* Cinematic Dynamic Preloader Layer (Zero Black Flash Configuration) */
     #preloader {
       position: fixed;
       inset: 0;
@@ -65,7 +63,8 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1), visibility 1.2s;
+      background: var(--bg-dark);
+      transition: transform 1.1s cubic-bezier(0.85, 0, 0.15, 1), visibility 1.1s;
       will-change: transform;
     }
     .preloader-video-wrap {
@@ -86,14 +85,13 @@
       z-index: 10;
       width: 100%;
       height: 3px;
-      background: rgba(226, 225, 218, 0.1);
+      background: rgba(226, 225, 218, 0.05);
       overflow: hidden;
     }
     .preloader-bar {
       height: 100%;
       width: 0%;
       background: var(--bronze);
-      transition: width 4.6s cubic-bezier(0.1, 0.8, 0.1, 1);
     }
     #preloader.dismissed {
       transform: translate3d(0, -100%, 0);
@@ -322,14 +320,13 @@
         transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
       }
 
-      /* Native Active Press System Interactions */
       .work-item.pressed-state .work-index,
       .work-item.pressed-state .work-meta,
       .work-item.pressed-state .work-title {
-        opacity: 0; /* Clean typographic exit drop */
+        opacity: 0; 
       }
       .work-item.pressed-state .peek-container {
-        opacity: 0.85; /* Full-frame preview clarity */
+        opacity: 0.85; 
       }
     }
 
@@ -401,7 +398,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.35; /* Elevated blueprint backdrop visibility */
+      opacity: 0.35; 
       filter: grayscale(20%);
       will-change: transform;
     }
@@ -537,11 +534,10 @@
 </head>
 <body>
 
-  <!-- Pure Cinematic Preloader Layer (Instant load configuration to fix black flashes) -->
   <div id="preloader">
     <div class="preloader-video-wrap">
       <video class="preloader-video" id="intro-video" muted playsinline preload="auto">
-        <source src="rov-2.mp4" type="video/mp4">
+        <source src="Rov-Intro.mp4" type="video/mp4">
       </video>
     </div>
     <div class="preloader-bar-wrap">
@@ -549,7 +545,6 @@
     </div>
   </div>
 
-  <!-- Navigation Grid Element -->
   <header>
     <a href="#" class="studio-logo">ROVOCHÉ</a>
     <ul class="nav-menu nav-links">
@@ -560,7 +555,6 @@
     </ul>
   </header>
 
-  <!-- Hero Platform Container -->
   <section id="hero">
     <div class="hero-bg-container">
       <video class="hero-video" id="parallax-bg" autoplay muted loop playsinline preload="auto">
@@ -583,7 +577,6 @@
     </div>
   </section>
 
-  <!-- Portfolio Matrix Block (Clean Functional Target Context Enabled) -->
   <section id="work">
     <div class="grid-container">
       <div class="section-label">Selected Work / Canvas Overview</div>
@@ -630,7 +623,6 @@
     </div>
   </section>
 
-  <!-- Studio Formulation Panel -->
   <section id="studio">
     <div class="grid-container">
       <div class="section-label" style="border-bottom-color: rgba(226, 225, 218, 0.15);">The Studio Profile</div>
@@ -655,7 +647,6 @@
     </div>
   </section>
 
-  <!-- Capability Blueprint Section -->
   <section id="services">
     <div class="services-bg-container">
       <video class="services-video" id="services-parallax-bg" autoplay muted loop playsinline preload="auto">
@@ -694,7 +685,6 @@
     </div>
   </section>
 
-  <!-- Clean Final Action Node -->
   <section id="action">
     <div class="grid-container">
       <div class="action-wrap reveal-item">
@@ -705,7 +695,6 @@
     </div>
   </section>
 
-  <!-- Monospaced Data Grid Footer -->
   <footer>
     <div class="grid-container">
       <div class="footer-left">
@@ -720,51 +709,44 @@
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       
-      // ── SYSTEM 1: FIXED COLD INTRO SYSTEM (FORCED 5-SECOND CLIPPING LOOKAHEAD) ──
+      // ── SYSTEM 1: INSTANT-PLAY PRELOADER ENGINE (ROV-INTRO DESIGNATED DEPLOY) ──
       const introVid = document.getElementById('intro-video');
       const loadBar = document.getElementById('load-bar');
       const preloader = document.getElementById('preloader');
 
-      function syncIntroPlayback() {
-        const duration = introVid.duration;
-        if (duration && duration > 5) {
-          introVid.currentTime = duration - 5;
-        } else {
-          introVid.currentTime = 0;
-        }
-        
-        introVid.play().catch(err => {
-          // Native user interaction security fallback bounds
-          setTimeout(dismissPreloader, 4000);
-        });
-
-        // Trigger loading loop tracker instantly
-        requestAnimationFrame(() => {
+      function fireIntroSequence() {
+        introVid.play().then(() => {
+          // Drive the loading line at a consistent speed synchronized with playback duration
+          const videoDuration = introVid.duration || 4.5;
+          loadBar.style.transition = `width ${videoDuration}s linear`;
+          requestAnimationFrame(() => {
+            loadBar.style.width = "100%";
+          });
+        }).catch(() => {
+          // Security fallback if strict mobile autoplay mechanics block the audio/video context
+          loadBar.style.transition = 'width 3.5s ease-out';
           loadBar.style.width = "100%";
+          setTimeout(exitPreloader, 3500);
         });
       }
 
-      function dismissPreloader() {
+      function exitPreloader() {
         preloader.classList.add('dismissed');
       }
 
-      // Bind initialization to the data download state directly to solve black layout screen updates
+      // Execute track instantly upon data-read initialization to bypass dark screen states
       if (introVid.readyState >= 2) {
-        syncIntroPlayback();
+        fireIntroSequence();
       } else {
-        introVid.addEventListener('loadeddata', syncIntroPlayback);
+        introVid.addEventListener('loadeddata', fireIntroSequence);
       }
 
-      // Track exact time markers or catch loops gracefully at terminal boundaries
-      introVid.addEventListener('timeupdate', function() {
-        if (introVid.duration && (introVid.currentTime >= introVid.duration - 0.2)) {
-          dismissPreloader();
-        }
-      });
-      setTimeout(dismissPreloader, 4500);
+      // Clean dismiss hooks on video end metrics
+      introVid.addEventListener('ended', exitPreloader);
+      setTimeout(exitPreloader, 5000); // Absolute fallback gate
 
 
-      // ── SYSTEM 2: DESKTOP WORK PEEK HOVER METRICS ──
+      // ── SYSTEM 2: DESKTOP PORFOLIO HOVER METRICS ──
       if (window.innerWidth > 1024) {
         document.querySelectorAll('.work-item').forEach(item => {
           item.addEventListener('mousemove', function(e) {
@@ -781,7 +763,6 @@
             if(peek) peek.style.transform = 'translate3d(0px, -50%, 0) scale(0.9)';
           });
 
-          // Core redirect assignment logic for desktop clicks
           item.addEventListener('click', function() {
             const url = item.getAttribute('data-url');
             if(url) window.open(url, '_blank', 'noopener');
@@ -790,20 +771,15 @@
       }
 
 
-      // ── SYSTEM 3: MOBILE INTERACTION TOUCH/RELEASE ROUTER ──
+      // ── SYSTEM 3: MOBILE INTERACTION FRAME ENGINE ──
       if (window.innerWidth <= 768) {
         document.querySelectorAll('.work-item').forEach(item => {
-          
-          // Clear typographic fields on immediate touch intent
           item.addEventListener('touchstart', function() {
             item.classList.add('pressed-state');
           }, { passive: true });
 
-          // Safe execution path routing logic upon release
           item.addEventListener('touchend', function() {
             const destinationUrl = item.getAttribute('data-url');
-            
-            // Hold view architecture frame temporarily to maintain visual depth before redirecting
             setTimeout(() => {
               item.classList.remove('pressed-state');
               if(destinationUrl) {
@@ -819,7 +795,7 @@
       }
 
 
-      // ── SYSTEM 4: HARDWARE-ACCELERATED LAYER MOTION SYSTEM ──
+      // ── SYSTEM 4: SCROLL COMPOSITION PARALLAX TRANSFORMS ──
       const bgVideo = document.getElementById('parallax-bg');
       const servicesBgVideo = document.getElementById('services-parallax-bg');
       
@@ -830,7 +806,6 @@
           bgVideo.style.transform = 'translate3d(0, ' + (scrollOffset * 0.35) + 'px, 0) scale(1.02)';
           servicesBgVideo.style.transform = 'translate3d(0, ' + ((scrollOffset - servicesBgVideo.offsetTop) * 0.15) + 'px, 0) scale(1.05)';
         } else {
-          // Mobile Smooth Interstitial Scroll Offset Tracker
           const mobileItems = document.querySelectorAll('.work-item');
           mobileItems.forEach(item => {
             const bounding = item.getBoundingClientRect();
@@ -846,7 +821,7 @@
       }, { passive: true });
 
 
-      // ── SYSTEM 5: CACHED VIEWPORT INTERSECTION OBSERVER ──
+      // ── SYSTEM 5: VIEWPORT REVEAL OBSERVER ──
       const observerSettings = { threshold: 0.05, rootMargin: "0px 0px -20px 0px" };
       const viewportObserver = new IntersectionObserver(function(elements, observer) {
         elements.forEach(el => {
