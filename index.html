@@ -6,14 +6,12 @@
   <title>ROVOCHÉ Studio</title>
   <meta name="description" content="Digital foundations for brands that intend to last.">
   
-  <!-- Favicon & Social Share Images -->
   <link rel="icon" type="image/png" href="ROVOCHE-FAVICON.png">
   <meta property="og:title" content="ROVOCHÉ Studio">
   <meta property="og:description" content="Digital foundations for brands that intend to last.">
   <meta property="og:image" content="ROVOCHE-SOCIAL-IMAGE.png">
   <meta name="twitter:image" content="ROVOCHE-SOCIAL-IMAGE.png">
 
-  <!-- Minimalist Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
@@ -475,7 +473,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.45; /* Amplified visibility footprint */
+      opacity: 0.45; 
       will-change: transform;
     }
     .testimonials-overlay {
@@ -554,15 +552,37 @@
       .testimonial-card { scroll-snap-align: start; }
     }
 
-    /* Call to Action Framework */
+    /* Call to Action Framework with Live ROV-rock.mp4 Video Canvas Layer */
     #action {
-      padding: 160px 0;
+      position: relative;
+      padding: 180px 0;
       background: var(--bg-dark);
       color: var(--stone-white);
       text-align: center;
       border-top: 1px solid var(--line-color);
+      overflow: hidden;
+    }
+    .action-bg-container {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .action-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.4; /* Balanced visibility setting */
+      will-change: transform;
+    }
+    .action-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(21,22,22,0.3) 50%, var(--bg-dark) 100%);
     }
     .action-wrap {
+      position: relative;
+      z-index: 2;
       grid-column: 3 / 11;
       display: flex;
       flex-direction: column;
@@ -574,14 +594,18 @@
       line-height: 1.15;
       font-weight: 400;
       margin-bottom: 40px;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6); /* Typography protection over video movement */
     }
     .action-btn {
       font-size: 0.75rem;
       letter-spacing: 0.3em;
       text-transform: uppercase;
       padding: 16px 40px;
-      border: 1px solid rgba(226, 225, 218, 0.25);
+      border: 1px solid rgba(226, 225, 218, 0.35);
       border-radius: 0px;
+      background: rgba(21, 22, 22, 0.2);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       transition: border-color 0.4s ease, background-color 0.4s ease, color 0.4s ease;
     }
     .action-btn:hover {
@@ -593,7 +617,8 @@
       margin-top: 48px;
       font-size: 0.75rem;
       letter-spacing: 0.15em;
-      color: rgba(226, 225, 218, 0.4);
+      color: rgba(226, 225, 218, 0.6);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
       transition: color 0.3s ease;
     }
     .action-mail:hover {
@@ -602,6 +627,7 @@
 
     @media (max-width: 768px) {
       .action-wrap { grid-column: 1 / 13; }
+      #action { padding: 140px 0; }
     }
 
     /* Editorial Footer Layout */
@@ -641,7 +667,6 @@
 </head>
 <body>
 
-  <!-- Pure Dynamic Preloader Layer using Rov-Intro.mp4 -->
   <div id="preloader">
     <div class="preloader-video-wrap">
       <video class="preloader-video" id="intro-video" muted playsinline preload="auto">
@@ -653,7 +678,6 @@
     </div>
   </div>
 
-  <!-- Navigation Grid Element -->
   <header>
     <a href="#" class="studio-logo">ROVOCHÉ</a>
     <ul class="nav-menu nav-links">
@@ -665,7 +689,6 @@
     </ul>
   </header>
 
-  <!-- Hero Canvas Section -->
   <section id="hero">
     <div class="hero-bg-container">
       <video class="hero-video" id="parallax-bg" autoplay muted loop playsinline preload="auto">
@@ -688,7 +711,6 @@
     </div>
   </section>
 
-  <!-- Portfolio Matrix Block -->
   <section id="work">
     <div class="grid-container">
       <div class="section-label">Selected Work / Canvas Overview</div>
@@ -735,7 +757,6 @@
     </div>
   </section>
 
-  <!-- Studio Formulation Panel -->
   <section id="studio">
     <div class="grid-container">
       <div class="section-label" style="border-bottom-color: rgba(226, 225, 218, 0.15);">The Studio Profile</div>
@@ -760,7 +781,6 @@
     </div>
   </section>
 
-  <!-- Capability Blueprint Section -->
   <section id="services">
     <div class="services-bg-container">
       <video class="services-video" id="services-parallax-bg" autoplay muted loop playsinline preload="auto">
@@ -799,7 +819,6 @@
     </div>
   </section>
 
-  <!-- Architectural Testimonials Carousel Section (ROV-1.mp4 Canvas Variant) -->
   <section id="testimonials">
     <div class="testimonials-bg-container">
       <video class="testimonials-video" id="testimonials-parallax-bg" autoplay muted loop playsinline preload="auto">
@@ -816,7 +835,6 @@
       <h2 class="grid-column: 1 / 6;" style="font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 400;">Verified Foundations</h2>
     </div>
 
-    <!-- Wide Axis Drag Stream -->
     <div class="testimonials-viewport" id="carousel-viewport">
       <div class="testimonials-track" id="carousel-track">
         
@@ -874,8 +892,14 @@
     </div>
   </section>
 
-  <!-- Clean Final Action Node -->
   <section id="action">
+    <div class="action-bg-container">
+      <video class="action-video" id="action-parallax-bg" autoplay muted loop playsinline preload="auto">
+        <source src="ROV-rock.mp4" type="video/mp4">
+      </video>
+      <div class="action-overlay"></div>
+    </div>
+
     <div class="grid-container">
       <div class="action-wrap reveal-item">
         <h2 class="action-title">Built on rock. Designed to grow with you.</h2>
@@ -885,7 +909,6 @@
     </div>
   </section>
 
-  <!-- Monospaced Data Grid Footer -->
   <footer>
     <div class="grid-container">
       <div class="footer-left">
@@ -958,7 +981,7 @@
       }
 
 
-      // ── SYSTEM 3: ANTI-SENSENSITIVITY MOBILE TOUCH TIMING ROUTER ──
+      // ── SYSTEM 3: ANTI-SENSITIVITY MOBILE TOUCH TIMING ROUTER ──
       if (window.innerWidth <= 768) {
         document.querySelectorAll('.work-item').forEach(item => {
           let touchStartTimeout = null;
@@ -969,7 +992,6 @@
             startY = e.touches[0].clientY;
             isScrolling = false;
             
-            // Deliberate hold threshold loop prevents instant activation while scrolling
             touchStartTimeout = setTimeout(() => {
               if (!isScrolling) {
                 item.classList.add('pressed-state');
@@ -979,7 +1001,6 @@
 
           item.addEventListener('touchmove', function(e) {
             let currentY = e.touches[0].clientY;
-            // Cancel hold sequence instantly if vertical finger displacement path is observed
             if (Math.abs(currentY - startY) > 10) {
               isScrolling = true;
               clearTimeout(touchStartTimeout);
@@ -1015,6 +1036,7 @@
       const bgVideo = document.getElementById('parallax-bg');
       const servicesBgVideo = document.getElementById('services-parallax-bg');
       const testimonialsBgVideo = document.getElementById('testimonials-parallax-bg');
+      const actionBgVideo = document.getElementById('action-parallax-bg');
       
       window.addEventListener('scroll', function() {
         let scrollOffset = window.pageYOffset;
@@ -1023,6 +1045,7 @@
           bgVideo.style.transform = 'translate3d(0, ' + (scrollOffset * 0.35) + 'px, 0) scale(1.02)';
           servicesBgVideo.style.transform = 'translate3d(0, ' + ((scrollOffset - servicesBgVideo.offsetTop) * 0.15) + 'px, 0) scale(1.05)';
           testimonialsBgVideo.style.transform = 'translate3d(0, ' + ((scrollOffset - testimonialsBgVideo.offsetTop) * 0.1) + 'px, 0) scale(1.03)';
+          actionBgVideo.style.transform = 'translate3d(0, ' + ((scrollOffset - actionBgVideo.offsetTop) * 0.12) + 'px, 0) scale(1.04)';
         } else {
           const mobileItems = document.querySelectorAll('.work-item');
           mobileItems.forEach(item => {
