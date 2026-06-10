@@ -261,8 +261,34 @@
     @media (max-width: 768px) {
       .work-header { padding: 0 28px; flex-direction: column; align-items: flex-start; gap: 12px; }
       .work-rows { padding: 0 28px; }
-      .work-row { grid-template-columns: 40px 1fr; }
-      .row-arrow, .row-peek { display: none; }
+      .work-row {
+        grid-template-columns: 36px 1fr 32px;
+        grid-template-rows: auto auto;
+        padding: 24px 0 0;
+      }
+      .row-num { grid-column: 1; grid-row: 1; align-self: center; }
+      .row-main { grid-column: 2; grid-row: 1; }
+      .row-arrow { grid-column: 3; grid-row: 1; align-self: center; width: 32px; height: 32px; font-size: .7rem; }
+      .row-peek {
+        position: relative; right: auto; top: auto;
+        transform: none; opacity: 1;
+        width: 100%; height: 54vw; max-height: 220px;
+        display: block; pointer-events: none;
+        grid-column: 1 / -1; grid-row: 2;
+        margin-top: 20px; margin-bottom: 0;
+        border-radius: 6px;
+        box-shadow: 0 8px 32px rgba(0,0,0,.4);
+        transition: none;
+      }
+      .work-row:last-child { border-bottom: 1px solid rgba(232,228,212,.06); }
+      .work-row:last-child .row-peek { margin-bottom: 24px; }
+      /* Add bottom spacing after image */
+      .work-row::after {
+        content: '';
+        display: block;
+        grid-column: 1 / -1;
+        height: 24px;
+      }
     }
 
     /* ── STUDIO ── */
