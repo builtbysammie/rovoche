@@ -6,12 +6,14 @@
   <title>ROVOCHÉ Studio</title>
   <meta name="description" content="Digital foundations for brands that intend to last.">
   
+  <!-- Favicon & Social Share Images -->
   <link rel="icon" type="image/png" href="ROVOCHE-FAVICON.png">
   <meta property="og:title" content="ROVOCHÉ Studio">
   <meta property="og:description" content="Digital foundations for brands that intend to last.">
   <meta property="og:image" content="ROVOCHE-SOCIAL-IMAGE.png">
   <meta name="twitter:image" content="ROVOCHE-SOCIAL-IMAGE.png">
 
+  <!-- Minimalist Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
@@ -54,7 +56,7 @@
       .grid-container { padding: 0 20px; }
     }
 
-    /* Cinematic Dynamic Preloader Layer (Zero Black Flash Configuration) */
+    /* Cinematic Dynamic Preloader Layer */
     #preloader {
       position: fixed;
       inset: 0;
@@ -261,7 +263,7 @@
       color: var(--bronze);
     }
     
-    /* Hover Image Preview Frame (Desktop Defaults) */
+    /* Hover Image Preview Frame */
     .peek-container {
       position: absolute;
       right: 8%;
@@ -293,7 +295,7 @@
       .peek-container { display: none; }
     }
     
-    /* Premium Mobile Touch Frame & Disappearing Typography Execution */
+    /* Premium Mobile Touch Frame System */
     @media (max-width: 768px) {
       .work-item {
         grid-template-columns: repeat(4, 1fr);
@@ -381,7 +383,7 @@
       .studio-media { height: 35vh; margin-top: 40px; }
     }
 
-    /* Capabilities Blueprint Section — Enhanced Dynamic Video Visibility */
+    /* Capability Blueprint Section */
     #services {
       position: relative;
       padding: 140px 0;
@@ -445,6 +447,71 @@
     @media (max-width: 850px) {
       .services-intro { grid-column: 1 / 13; position: static; margin-bottom: 40px; }
       .services-list { grid-column: 1 / 13; }
+    }
+
+    /* Architectural Testimonials Blueprint Section */
+    #testimonials {
+      padding: 140px 0;
+      background: var(--panel-dark);
+      border-top: 1px solid var(--line-color);
+    }
+    .testimonials-heading {
+      grid-column: 1 / 4;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 400;
+      position: sticky;
+      top: 60px;
+      height: fit-content;
+    }
+    .testimonials-grid {
+      grid-column: 5 / 13;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+    }
+    .testimonial-card {
+      border-left: 1px solid var(--line-color);
+      padding: 0 0 32px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    /* Dynamic asymmetrical spanning to match museum design aesthetics */
+    .testimonial-card:nth-child(3n+1) {
+      grid-column: span 2;
+    }
+    .testimonial-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.2rem, 2vw, 1.6rem);
+      line-height: 1.4;
+      font-weight: 400;
+      color: var(--stone-white);
+      margin-bottom: 32px;
+    }
+    .testimonial-meta {
+      display: flex;
+      flex-direction: column;
+    }
+    .client-name {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-weight: 400;
+      color: var(--stone-white);
+    }
+    .client-company {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--slate-grey);
+      margin-top: 4px;
+    }
+
+    @media (max-width: 850px) {
+      .testimonials-heading { grid-column: 1 / 13; position: static; margin-bottom: 48px; }
+      .testimonials-grid { grid-column: 1 / 13; grid-template-columns: 1fr; gap: 32px; }
+      .testimonial-card:nth-child(3n+1) { grid-column: span 1; }
     }
 
     /* Call to Action Framework */
@@ -534,6 +601,7 @@
 </head>
 <body>
 
+  <!-- Pure Dynamic Preloader Layer using Rov-Intro.mp4 -->
   <div id="preloader">
     <div class="preloader-video-wrap">
       <video class="preloader-video" id="intro-video" muted playsinline preload="auto">
@@ -545,16 +613,19 @@
     </div>
   </div>
 
+  <!-- Navigation Grid Element -->
   <header>
     <a href="#" class="studio-logo">ROVOCHÉ</a>
     <ul class="nav-menu nav-links">
       <li><a href="#work">Work</a></li>
       <li><a href="#services">Services</a></li>
       <li><a href="#studio">Studio</a></li>
+      <li><a href="#testimonials">Impact</a></li>
       <li><a href="#action">Begin Project</a></li>
     </ul>
   </header>
 
+  <!-- Hero Canvas Section -->
   <section id="hero">
     <div class="hero-bg-container">
       <video class="hero-video" id="parallax-bg" autoplay muted loop playsinline preload="auto">
@@ -577,6 +648,7 @@
     </div>
   </section>
 
+  <!-- Portfolio Matrix Block -->
   <section id="work">
     <div class="grid-container">
       <div class="section-label">Selected Work / Canvas Overview</div>
@@ -623,6 +695,7 @@
     </div>
   </section>
 
+  <!-- Studio Formulation Panel -->
   <section id="studio">
     <div class="grid-container">
       <div class="section-label" style="border-bottom-color: rgba(226, 225, 218, 0.15);">The Studio Profile</div>
@@ -647,6 +720,7 @@
     </div>
   </section>
 
+  <!-- Capability Blueprint Section -->
   <section id="services">
     <div class="services-bg-container">
       <video class="services-video" id="services-parallax-bg" autoplay muted loop playsinline preload="auto">
@@ -685,6 +759,70 @@
     </div>
   </section>
 
+  <!-- Architectural Testimonials Blueprint Section -->
+  <section id="testimonials">
+    <div class="grid-container">
+      <div class="section-label">Verifiable Proof / Alignment Records</div>
+      
+      <h2 class="testimonials-heading">Verified Foundations</h2>
+      
+      <div class="testimonials-grid">
+        
+        <div class="testimonial-card reveal-item">
+          <blockquote class="testimonial-quote">
+            "Sammie helped us turn our fashion story into a website that feels elegant, clear, and ready for serious customers. The structure made our offer easier to understand."
+          </blockquote>
+          <div class="testimonial-meta">
+            <span class="client-name">Hannah</span>
+            <span class="client-company">Peasis Fashion</span>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal-item">
+          <blockquote class="testimonial-quote">
+            "The final page felt sharper than what we had in mind. Built by Sammie understood the goal quickly and shaped the website around trust, clarity, and action."
+          </blockquote>
+          <div class="testimonial-meta">
+            <span class="client-name">Michael</span>
+            <span class="client-company">Herkimer Capital</span>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal-item">
+          <blockquote class="testimonial-quote">
+            "The work made our brand feel more credible online. The layout and mobile experience were cleaner than expected, and the page was easy to share with anyone."
+          </blockquote>
+          <div class="testimonial-meta">
+            <span class="client-name">Segun</span>
+            <span class="client-company">ValueIQX</span>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal-item">
+          <blockquote class="testimonial-quote">
+            "What stood out was how practical the process felt. The website wasn't just pretty — it made the business easier to explain and easier to contact."
+          </blockquote>
+          <div class="testimonial-meta">
+            <span class="client-name">Amara</span>
+            <span class="client-company">Service Brand Founder</span>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal-item">
+          <blockquote class="testimonial-quote">
+            "The redesign gave us a more polished first impression. It finally felt like our online presence matched the quality of the work we already do offline."
+          </blockquote>
+          <div class="testimonial-meta">
+            <span class="client-name">Daniel</span>
+            <span class="client-company">Local Business Owner</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action Framework -->
   <section id="action">
     <div class="grid-container">
       <div class="action-wrap reveal-item">
@@ -695,6 +833,7 @@
     </div>
   </section>
 
+  <!-- Monospaced Data Grid Footer -->
   <footer>
     <div class="grid-container">
       <div class="footer-left">
@@ -709,21 +848,19 @@
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       
-      // ── SYSTEM 1: INSTANT-PLAY PRELOADER ENGINE (ROV-INTRO DESIGNATED DEPLOY) ──
+      // ── SYSTEM 1: INSTANT-PLAY PRELOADER ENGINE ──
       const introVid = document.getElementById('intro-video');
       const loadBar = document.getElementById('load-bar');
       const preloader = document.getElementById('preloader');
 
       function fireIntroSequence() {
         introVid.play().then(() => {
-          // Drive the loading line at a consistent speed synchronized with playback duration
           const videoDuration = introVid.duration || 4.5;
           loadBar.style.transition = `width ${videoDuration}s linear`;
           requestAnimationFrame(() => {
             loadBar.style.width = "100%";
           });
         }).catch(() => {
-          // Security fallback if strict mobile autoplay mechanics block the audio/video context
           loadBar.style.transition = 'width 3.5s ease-out';
           loadBar.style.width = "100%";
           setTimeout(exitPreloader, 3500);
@@ -734,19 +871,17 @@
         preloader.classList.add('dismissed');
       }
 
-      // Execute track instantly upon data-read initialization to bypass dark screen states
       if (introVid.readyState >= 2) {
         fireIntroSequence();
       } else {
         introVid.addEventListener('loadeddata', fireIntroSequence);
       }
 
-      // Clean dismiss hooks on video end metrics
       introVid.addEventListener('ended', exitPreloader);
-      setTimeout(exitPreloader, 5000); // Absolute fallback gate
+      setTimeout(exitPreloader, 5000);
 
 
-      // ── SYSTEM 2: DESKTOP PORFOLIO HOVER METRICS ──
+      // ── SYSTEM 2: DESKTOP PORTFOLIO HOVER METRICS ──
       if (window.innerWidth > 1024) {
         document.querySelectorAll('.work-item').forEach(item => {
           item.addEventListener('mousemove', function(e) {
