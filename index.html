@@ -60,7 +60,6 @@
     #preloader {
       position: fixed;
       inset: 0;
-      background: var(--bg-dark);
       z-index: 9999;
       overflow: hidden;
       display: flex;
@@ -80,13 +79,13 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.65;
+      opacity: 0.75;
     }
     .preloader-bar-wrap {
       position: relative;
       z-index: 10;
       width: 100%;
-      height: 2px;
+      height: 3px;
       background: rgba(226, 225, 218, 0.1);
       overflow: hidden;
     }
@@ -94,7 +93,7 @@
       height: 100%;
       width: 0%;
       background: var(--bronze);
-      transition: width 4.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transition: width 4.6s cubic-bezier(0.1, 0.8, 0.1, 1);
     }
     #preloader.dismissed {
       transform: translate3d(0, -100%, 0);
@@ -233,12 +232,14 @@
       border-bottom: 1px solid var(--line-color);
       align-items: center;
       position: relative;
+      cursor: pointer;
     }
     .work-index {
       grid-column: 1 / 2;
       font-size: 0.65rem;
       color: var(--slate-grey);
       position: relative; z-index: 2;
+      transition: opacity 0.4s ease;
     }
     .work-meta {
       grid-column: 2 / 6;
@@ -247,6 +248,7 @@
       text-transform: uppercase;
       color: var(--slate-grey);
       position: relative; z-index: 2;
+      transition: opacity 0.4s ease;
     }
     .work-title {
       grid-column: 6 / 12;
@@ -254,14 +256,14 @@
       font-size: clamp(1.5rem, 2.5vw, 2.2rem);
       font-weight: 400;
       position: relative; z-index: 2;
-      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), color 0.4s ease, opacity 0.4s ease;
     }
     .work-item:hover .work-title {
       transform: translateX(16px);
       color: var(--bronze);
     }
     
-    /* Hover & Mobile Ambient Card Frame */
+    /* Hover Image Preview Frame (Desktop Defaults) */
     .peek-container {
       position: absolute;
       right: 8%;
@@ -293,7 +295,7 @@
       .peek-container { display: none; }
     }
     
-    /* Mobile Preview Canvas Display Config */
+    /* Premium Mobile Touch Frame & Disappearing Typography Execution */
     @media (max-width: 768px) {
       .work-item {
         grid-template-columns: repeat(4, 1fr);
@@ -315,9 +317,19 @@
         height: 100%;
         transform: none;
         top: 0; right: 0; bottom: 0; left: 0;
-        opacity: 0.12; 
+        opacity: 0.15; 
         z-index: 1;
-        transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+
+      /* Native Active Press System Interactions */
+      .work-item.pressed-state .work-index,
+      .work-item.pressed-state .work-meta,
+      .work-item.pressed-state .work-title {
+        opacity: 0; /* Clean typographic exit drop */
+      }
+      .work-item.pressed-state .peek-container {
+        opacity: 0.85; /* Full-frame preview clarity */
       }
     }
 
@@ -372,7 +384,7 @@
       .studio-media { height: 35vh; margin-top: 40px; }
     }
 
-    /* Core Architectural Capabilities Block — Highly Visible Background Video */
+    /* Capabilities Blueprint Section — Enhanced Dynamic Video Visibility */
     #services {
       position: relative;
       padding: 140px 0;
@@ -389,14 +401,14 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.22; /* Increased depth perspective presence */
-      filter: grayscale(40%);
+      opacity: 0.35; /* Elevated blueprint backdrop visibility */
+      filter: grayscale(20%);
       will-change: transform;
     }
     .services-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(21,22,22,0.6) 50%, var(--bg-dark) 100%);
+      background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(21,22,22,0.4) 50%, var(--bg-dark) 100%);
     }
     #services .grid-container {
       position: relative;
@@ -525,7 +537,7 @@
 </head>
 <body>
 
-  <!-- Pure Cinematic Preloader (No Typography text - just raw video sequence & loading progress bar) -->
+  <!-- Pure Cinematic Preloader Layer (Instant load configuration to fix black flashes) -->
   <div id="preloader">
     <div class="preloader-video-wrap">
       <video class="preloader-video" id="intro-video" muted playsinline preload="auto">
@@ -548,7 +560,7 @@
     </ul>
   </header>
 
-  <!-- Hero Platform Container (Remains intact right underneath preloader viewport) -->
+  <!-- Hero Platform Container -->
   <section id="hero">
     <div class="hero-bg-container">
       <video class="hero-video" id="parallax-bg" autoplay muted loop playsinline preload="auto">
@@ -571,44 +583,44 @@
     </div>
   </section>
 
-  <!-- Portfolio Matrix Block -->
+  <!-- Portfolio Matrix Block (Clean Functional Target Context Enabled) -->
   <section id="work">
     <div class="grid-container">
       <div class="section-label">Selected Work / Canvas Overview</div>
       
       <div class="work-list">
         
-        <div class="work-item reveal-item">
+        <div class="work-item reveal-item" data-url="https://rovoche.github.io/luxuryfashion/">
           <span class="work-index">01</span>
           <span class="work-meta">Fashion / Couture / 2026</span>
-          <a href="#" class="work-title">Bespoke Couture Architecture</a>
+          <a href="https://rovoche.github.io/luxuryfashion/" target="_blank" rel="noopener" class="work-title">Bespoke Couture Architecture</a>
           <div class="peek-container depth-element">
             <img src="SBL-SCC.png" alt="Couture Preview">
           </div>
         </div>
 
-        <div class="work-item reveal-item">
+        <div class="work-item reveal-item" data-url="https://rovoche.github.io/Glam-and-Makeup/">
           <span class="work-index">02</span>
           <span class="work-meta">Beauty / Identity / 2026</span>
-          <a href="#" class="work-title">Aesthetic Identity Frame</a>
+          <a href="https://rovoche.github.io/Glam-and-Makeup/" target="_blank" rel="noopener" class="work-title">Aesthetic Identity Frame</a>
           <div class="peek-container depth-element">
             <img src="KIKI-SCC.png" alt="Identity Preview">
           </div>
         </div>
 
-        <div class="work-item reveal-item">
+        <div class="work-item reveal-item" data-url="https://twaynesafehaven.org">
           <span class="work-index">03</span>
           <span class="work-meta">NGO Community / Platform / 2025</span>
-          <a href="#" class="work-title">Social Infrastructure Space</a>
+          <a href="https://twaynesafehaven.org" target="_blank" rel="noopener" class="work-title">Social Infrastructure Space</a>
           <div class="peek-container depth-element">
             <img src="TSH-SCC.png" alt="Platform Preview">
           </div>
         </div>
 
-        <div class="work-item reveal-item">
+        <div class="work-item reveal-item" data-url="https://peasis.com">
           <span class="work-index">04</span>
           <span class="work-meta">Commerce / Fashion / 2025</span>
-          <a href="#" class="work-title">Structured Digital Commerce</a>
+          <a href="https://peasis.com" target="_blank" rel="noopener" class="work-title">Structured Digital Commerce</a>
           <div class="peek-container depth-element">
             <img src="PEASIS-SCC.png" alt="Commerce Preview">
           </div>
@@ -643,7 +655,7 @@
     </div>
   </section>
 
-  <!-- Capability Blueprint Section with Enhanced Visibility Video Background -->
+  <!-- Capability Blueprint Section -->
   <section id="services">
     <div class="services-bg-container">
       <video class="services-video" id="services-parallax-bg" autoplay muted loop playsinline preload="auto">
@@ -708,22 +720,25 @@
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       
-      // ── SYSTEM 1: FIXED COLD INTRO LOGIC (NO DENSE TEXT FLASHES) ──
+      // ── SYSTEM 1: FIXED COLD INTRO SYSTEM (FORCED 5-SECOND CLIPPING LOOKAHEAD) ──
       const introVid = document.getElementById('intro-video');
       const loadBar = document.getElementById('load-bar');
       const preloader = document.getElementById('preloader');
 
-      function initIntroEngine() {
+      function syncIntroPlayback() {
         const duration = introVid.duration;
         if (duration && duration > 5) {
           introVid.currentTime = duration - 5;
+        } else {
+          introVid.currentTime = 0;
         }
+        
         introVid.play().catch(err => {
-          // Fallback if browser security rules disrupt loop playback mechanics
-          setTimeout(dismissPreloader, 4500);
+          // Native user interaction security fallback bounds
+          setTimeout(dismissPreloader, 4000);
         });
 
-        // Fire layout loading indicator path instantly
+        // Trigger loading loop tracker instantly
         requestAnimationFrame(() => {
           loadBar.style.width = "100%";
         });
@@ -733,50 +748,23 @@
         preloader.classList.add('dismissed');
       }
 
-      // Metadata safety check loops
-      if (introVid.readyState >= 1) {
-        initIntroEngine();
+      // Bind initialization to the data download state directly to solve black layout screen updates
+      if (introVid.readyState >= 2) {
+        syncIntroPlayback();
       } else {
-        introVid.addEventListener('loadedmetadata', initIntroEngine);
+        introVid.addEventListener('loadeddata', syncIntroPlayback);
       }
 
-      // Hard timeout safety barrier to clean out the screen array under any context
+      // Track exact time markers or catch loops gracefully at terminal boundaries
       introVid.addEventListener('timeupdate', function() {
-        if (introVid.duration && (introVid.duration - introVid.currentTime <= 0.2)) {
+        if (introVid.duration && (introVid.currentTime >= introVid.duration - 0.2)) {
           dismissPreloader();
         }
       });
-      setTimeout(dismissPreloader, 4800);
+      setTimeout(dismissPreloader, 4500);
 
 
-      // ── SYSTEM 2: HARDWARE-ACCELERATED TRANSFORMS & MOBILE PARALLAX ──
-      const bgVideo = document.getElementById('parallax-bg');
-      const servicesBgVideo = document.getElementById('services-parallax-bg');
-      
-      window.addEventListener('scroll', function() {
-        let scrollOffset = window.pageYOffset;
-        
-        if (window.innerWidth > 768) {
-          bgVideo.style.transform = 'translate3d(0, ' + (scrollOffset * 0.35) + 'px, 0) scale(1.02)';
-          servicesBgVideo.style.transform = 'translate3d(0, ' + ((scrollOffset - servicesBgVideo.offsetTop) * 0.15) + 'px, 0) scale(1.05)';
-        } else {
-          // Mobile Premium Smooth Card Translation Mechanics
-          const mobileItems = document.querySelectorAll('.work-item');
-          mobileItems.forEach(item => {
-            const bounding = item.getBoundingClientRect();
-            if (bounding.top < window.innerHeight && bounding.bottom > 0) {
-              const innerPeek = item.querySelector('.peek-container');
-              const scrollSpeedFactor = (window.innerHeight / 2 - bounding.top) * 0.12;
-              if(innerPeek) {
-                innerPeek.style.transform = 'translate3d(0, ' + (scrollSpeedFactor - 20) + 'px, 0)';
-              }
-            }
-          });
-        }
-      }, { passive: true });
-
-
-      // ── SYSTEM 3: DESKTOP MOUSE-RESPONSIVE DEPTH FIELD ENGINE ──
+      // ── SYSTEM 2: DESKTOP WORK PEEK HOVER METRICS ──
       if (window.innerWidth > 1024) {
         document.querySelectorAll('.work-item').forEach(item => {
           item.addEventListener('mousemove', function(e) {
@@ -792,11 +780,73 @@
             const peek = item.querySelector('.depth-element');
             if(peek) peek.style.transform = 'translate3d(0px, -50%, 0) scale(0.9)';
           });
+
+          // Core redirect assignment logic for desktop clicks
+          item.addEventListener('click', function() {
+            const url = item.getAttribute('data-url');
+            if(url) window.open(url, '_blank', 'noopener');
+          });
         });
       }
 
 
-      // ── SYSTEM 4: CACHED VIEWPORT INTERSECTION OBSERVER ──
+      // ── SYSTEM 3: MOBILE INTERACTION TOUCH/RELEASE ROUTER ──
+      if (window.innerWidth <= 768) {
+        document.querySelectorAll('.work-item').forEach(item => {
+          
+          // Clear typographic fields on immediate touch intent
+          item.addEventListener('touchstart', function() {
+            item.classList.add('pressed-state');
+          }, { passive: true });
+
+          // Safe execution path routing logic upon release
+          item.addEventListener('touchend', function() {
+            const destinationUrl = item.getAttribute('data-url');
+            
+            // Hold view architecture frame temporarily to maintain visual depth before redirecting
+            setTimeout(() => {
+              item.classList.remove('pressed-state');
+              if(destinationUrl) {
+                window.open(destinationUrl, '_blank', 'noopener');
+              }
+            }, 350);
+          }, { passive: true });
+
+          item.addEventListener('touchcancel', function() {
+            item.classList.remove('pressed-state');
+          }, { passive: true });
+        });
+      }
+
+
+      // ── SYSTEM 4: HARDWARE-ACCELERATED LAYER MOTION SYSTEM ──
+      const bgVideo = document.getElementById('parallax-bg');
+      const servicesBgVideo = document.getElementById('services-parallax-bg');
+      
+      window.addEventListener('scroll', function() {
+        let scrollOffset = window.pageYOffset;
+        
+        if (window.innerWidth > 768) {
+          bgVideo.style.transform = 'translate3d(0, ' + (scrollOffset * 0.35) + 'px, 0) scale(1.02)';
+          servicesBgVideo.style.transform = 'translate3d(0, ' + ((scrollOffset - servicesBgVideo.offsetTop) * 0.15) + 'px, 0) scale(1.05)';
+        } else {
+          // Mobile Smooth Interstitial Scroll Offset Tracker
+          const mobileItems = document.querySelectorAll('.work-item');
+          mobileItems.forEach(item => {
+            const bounding = item.getBoundingClientRect();
+            if (bounding.top < window.innerHeight && bounding.bottom > 0) {
+              const innerPeek = item.querySelector('.peek-container');
+              const scrollSpeedFactor = (window.innerHeight / 2 - bounding.top) * 0.12;
+              if(innerPeek && !item.classList.contains('pressed-state')) {
+                innerPeek.style.transform = 'translate3d(0, ' + (scrollSpeedFactor - 20) + 'px, 0)';
+              }
+            }
+          });
+        }
+      }, { passive: true });
+
+
+      // ── SYSTEM 5: CACHED VIEWPORT INTERSECTION OBSERVER ──
       const observerSettings = { threshold: 0.05, rootMargin: "0px 0px -20px 0px" };
       const viewportObserver = new IntersectionObserver(function(elements, observer) {
         elements.forEach(el => {
