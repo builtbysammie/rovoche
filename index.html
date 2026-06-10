@@ -7,11 +7,11 @@
   <meta name="description" content="Digital foundations for brands that intend to last.">
   
   <!-- Favicon & Social Share Images -->
-  <link rel="icon" type="image/png" href="ROVOCHÉ-FAVICON.png">
+  <link rel="icon" type="image/png" href="ROVOCHE-FAVICON.png">
   <meta property="og:title" content="ROVOCHÉ Studio">
   <meta property="og:description" content="Digital foundations for brands that intend to last.">
-  <meta property="og:image" content="ROVOCHÉ-SOCIAL-IMAGE.png">
-  <meta name="twitter:image" content="ROVOCHÉ-SOCIAL-IMAGE.png">
+  <meta property="og:image" content="ROVOCHE-SOCIAL-IMAGE.png">
+  <meta name="twitter:image" content="ROVOCHE-SOCIAL-IMAGE.png">
 
   <!-- Minimalist Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,56 +56,49 @@
       .grid-container { padding: 0 20px; }
     }
 
-    /* Cinematic Intro Preloader */
+    /* Cinematic Film Intro Preloader Layer */
     #preloader {
       position: fixed;
       inset: 0;
       background: var(--bg-dark);
       z-index: 9999;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
+      justify-content: flex-end;
+      transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1), visibility 1.2s;
+      will-change: transform;
     }
-    .preloader-video {
+    .preloader-video-wrap {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
+      background: var(--bg-dark);
+    }
+    .preloader-video {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      opacity: 0.4;
-    }
-    .preloader-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      width: 240px;
-    }
-    .preloader-logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      margin-bottom: 24px;
+      opacity: 0.65;
     }
     .preloader-bar-wrap {
-      width: 100%;
-      height: 1px;
-      background: rgba(226, 225, 218, 0.1);
       position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 2px;
+      background: rgba(226, 225, 218, 0.1);
       overflow: hidden;
     }
     .preloader-bar {
-      position: absolute;
-      top: 0; left: 0; bottom: 0;
+      height: 100%;
       width: 0%;
       background: var(--bronze);
-      transition: width 4.5s cubic-bezier(0.1, 0.85, 0.25, 1);
+      transition: width 4.8s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
     #preloader.dismissed {
       transform: translate3d(0, -100%, 0);
+      visibility: hidden;
     }
 
     /* Navigation */
@@ -155,6 +148,7 @@
       justify-content: space-between;
       padding: 140px 0 64px 0;
       overflow: hidden;
+      z-index: 10;
     }
     .hero-bg-container {
       position: absolute;
@@ -267,7 +261,7 @@
       color: var(--bronze);
     }
     
-    /* Premium Hover & Mobile Ambient Card Frame */
+    /* Hover & Mobile Ambient Card Frame */
     .peek-container {
       position: absolute;
       right: 8%;
@@ -299,7 +293,7 @@
       .peek-container { display: none; }
     }
     
-    /* Mobile-Specific Premium Inline Preview Framework */
+    /* Mobile Preview Canvas Display Config */
     @media (max-width: 768px) {
       .work-item {
         grid-template-columns: repeat(4, 1fr);
@@ -321,7 +315,7 @@
         height: 100%;
         transform: none;
         top: 0; right: 0; bottom: 0; left: 0;
-        opacity: 0.12; /* Subtle, expensive raw texture footprint */
+        opacity: 0.12; 
         z-index: 1;
         transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
       }
@@ -378,7 +372,7 @@
       .studio-media { height: 35vh; margin-top: 40px; }
     }
 
-    /* Core Architectural Capabilities Block — Video Fluid Canvas */
+    /* Core Architectural Capabilities Block — Highly Visible Background Video */
     #services {
       position: relative;
       padding: 140px 0;
@@ -395,14 +389,14 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.12; /* Subtle structural movement */
-      filter: grayscale(100%);
+      opacity: 0.22; /* Increased depth perspective presence */
+      filter: grayscale(40%);
       will-change: transform;
     }
     .services-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(21,22,22,0.7) 50%, var(--bg-dark) 100%);
+      background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(21,22,22,0.6) 50%, var(--bg-dark) 100%);
     }
     #services .grid-container {
       position: relative;
@@ -517,7 +511,7 @@
       .footer-right { grid-column: 1 / 13; text-align: center; margin-top: 16px; }
     }
 
-    /* Clean Parallax Fade Engine definitions */
+    /* Parallax Fade Engine definitions */
     .reveal-item {
       opacity: 0;
       transform: translateY(30px);
@@ -531,16 +525,15 @@
 </head>
 <body>
 
-  <!-- Cinematic Cinematic Film Intro Preloader Section -->
+  <!-- Pure Cinematic Preloader (No Typography text - just raw video sequence & loading progress bar) -->
   <div id="preloader">
-    <video class="preloader-video" id="intro-video" muted playsinline preload="auto">
-      <source src="rov-2.mp4" type="video/mp4">
-    </video>
-    <div class="preloader-content">
-      <div class="preloader-logo">ROVOCHÉ</div>
-      <div class="preloader-bar-wrap">
-        <div class="preloader-bar" id="load-bar"></div>
-      </div>
+    <div class="preloader-video-wrap">
+      <video class="preloader-video" id="intro-video" muted playsinline preload="auto">
+        <source src="rov-2.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="preloader-bar-wrap">
+      <div class="preloader-bar" id="load-bar"></div>
     </div>
   </div>
 
@@ -555,7 +548,7 @@
     </ul>
   </header>
 
-  <!-- Hero Platform -->
+  <!-- Hero Platform Container (Remains intact right underneath preloader viewport) -->
   <section id="hero">
     <div class="hero-bg-container">
       <video class="hero-video" id="parallax-bg" autoplay muted loop playsinline preload="auto">
@@ -650,7 +643,7 @@
     </div>
   </section>
 
-  <!-- Capability Specifications List with Deep Fluid Video Canvas Background -->
+  <!-- Capability Blueprint Section with Enhanced Visibility Video Background -->
   <section id="services">
     <div class="services-bg-container">
       <video class="services-video" id="services-parallax-bg" autoplay muted loop playsinline preload="auto">
@@ -715,32 +708,48 @@
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       
-      // ── SYSTEM 1: CINEMATIC INTRO ENGINE (LAST 5 SECONDS LOOKAHEAD) ──
+      // ── SYSTEM 1: FIXED COLD INTRO LOGIC (NO DENSE TEXT FLASHES) ──
       const introVid = document.getElementById('intro-video');
       const loadBar = document.getElementById('load-bar');
       const preloader = document.getElementById('preloader');
 
-      introVid.addEventListener('loadedmetadata', function() {
-        // Set playback head directly to the final 5-second marker sequence
+      function initIntroEngine() {
         const duration = introVid.duration;
-        if(duration > 5) {
+        if (duration && duration > 5) {
           introVid.currentTime = duration - 5;
         }
-        introVid.play();
-        
-        // Trigger structural load bar animation inline
+        introVid.play().catch(err => {
+          // Fallback if browser security rules disrupt loop playback mechanics
+          setTimeout(dismissPreloader, 4500);
+        });
+
+        // Fire layout loading indicator path instantly
         requestAnimationFrame(() => {
           loadBar.style.width = "100%";
         });
-      });
+      }
 
-      // Clear intro layer systematically after processing loop
-      setTimeout(() => {
+      function dismissPreloader() {
         preloader.classList.add('dismissed');
-      }, 4500);
+      }
+
+      // Metadata safety check loops
+      if (introVid.readyState >= 1) {
+        initIntroEngine();
+      } else {
+        introVid.addEventListener('loadedmetadata', initIntroEngine);
+      }
+
+      // Hard timeout safety barrier to clean out the screen array under any context
+      introVid.addEventListener('timeupdate', function() {
+        if (introVid.duration && (introVid.duration - introVid.currentTime <= 0.2)) {
+          dismissPreloader();
+        }
+      });
+      setTimeout(dismissPreloader, 4800);
 
 
-      // ── SYSTEM 2: HARDWARE-ACCELERATED SCROLL PARALLAX ──
+      // ── SYSTEM 2: HARDWARE-ACCELERATED TRANSFORMS & MOBILE PARALLAX ──
       const bgVideo = document.getElementById('parallax-bg');
       const servicesBgVideo = document.getElementById('services-parallax-bg');
       
@@ -751,7 +760,7 @@
           bgVideo.style.transform = 'translate3d(0, ' + (scrollOffset * 0.35) + 'px, 0) scale(1.02)';
           servicesBgVideo.style.transform = 'translate3d(0, ' + ((scrollOffset - servicesBgVideo.offsetTop) * 0.15) + 'px, 0) scale(1.05)';
         } else {
-          // Mobile Smooth Parallax Translation for Portfolio Preview Layers
+          // Mobile Premium Smooth Card Translation Mechanics
           const mobileItems = document.querySelectorAll('.work-item');
           mobileItems.forEach(item => {
             const bounding = item.getBoundingClientRect();
@@ -767,7 +776,7 @@
       }, { passive: true });
 
 
-      // ── SYSTEM 3: INTERACTIVE DESKTOP DEPTH MOUSE ENGINE ──
+      // ── SYSTEM 3: DESKTOP MOUSE-RESPONSIVE DEPTH FIELD ENGINE ──
       if (window.innerWidth > 1024) {
         document.querySelectorAll('.work-item').forEach(item => {
           item.addEventListener('mousemove', function(e) {
@@ -787,7 +796,7 @@
       }
 
 
-      // ── SYSTEM 4: CACHED HIGH-PERFORMANCE INTERSECTION OBSERVER ──
+      // ── SYSTEM 4: CACHED VIEWPORT INTERSECTION OBSERVER ──
       const observerSettings = { threshold: 0.05, rootMargin: "0px 0px -20px 0px" };
       const viewportObserver = new IntersectionObserver(function(elements, observer) {
         elements.forEach(el => {
