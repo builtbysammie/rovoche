@@ -213,6 +213,13 @@
       padding-bottom: 12px;
       border-bottom: 1px solid var(--line-color);
       margin-bottom: 48px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .section-instruction {
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      color: var(--bronze);
     }
 
     /* Selected Work Section */
@@ -233,13 +240,14 @@
       align-items: center;
       position: relative;
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
     .work-index {
       grid-column: 1 / 2;
       font-size: 0.65rem;
       color: var(--slate-grey);
       position: relative; z-index: 2;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     }
     .work-meta {
       grid-column: 2 / 6;
@@ -248,7 +256,7 @@
       text-transform: uppercase;
       color: var(--slate-grey);
       position: relative; z-index: 2;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     }
     .work-title {
       grid-column: 6 / 12;
@@ -256,7 +264,7 @@
       font-size: clamp(1.5rem, 2.5vw, 2.2rem);
       font-weight: 400;
       position: relative; z-index: 2;
-      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), color 0.4s ease, opacity 0.4s ease;
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), color 0.4s ease, opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     }
     .work-item:hover .work-title {
       transform: translateX(16px);
@@ -295,7 +303,7 @@
       .peek-container { display: none; }
     }
     
-    /* Premium Mobile Touch Frame System */
+    /* Anti-Sensitivity Mobile Composition Framework */
     @media (max-width: 768px) {
       .work-item {
         grid-template-columns: repeat(4, 1fr);
@@ -467,13 +475,13 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.28; /* Clear, deep atmospheric overlay presence */
+      opacity: 0.45; /* Amplified visibility footprint */
       will-change: transform;
     }
     .testimonials-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(21,22,22,0.5) 50%, var(--bg-dark) 100%);
+      background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(21,22,22,0.4) 50%, var(--bg-dark) 100%);
     }
     .testimonials-header-block {
       position: relative;
@@ -501,7 +509,7 @@
     .testimonial-card {
       width: 460px;
       border-left: 1px solid var(--line-color);
-      background: rgba(28, 29, 29, 0.4); /* Glass architecture grounding */
+      background: rgba(28, 29, 29, 0.4); 
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       padding: 40px 32px;
@@ -562,8 +570,8 @@
     }
     .action-title {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(2.2rem, 6vw, 5rem);
-      line-height: 1.1;
+      font-size: clamp(2.2rem, 5vw, 4.4rem);
+      line-height: 1.15;
       font-weight: 400;
       margin-bottom: 40px;
     }
@@ -801,7 +809,10 @@
     </div>
 
     <div class="grid-container testimonials-header-block">
-      <div class="section-label" style="border-bottom-color: rgba(226, 225, 218, 0.15);">Verifiable Proof / Alignment Records</div>
+      <div class="section-label" style="border-bottom-color: rgba(226, 225, 218, 0.15);">
+        <span>Verifiable Proof / Alignment Records</span>
+        <span class="section-instruction">Swipe or Drag to explore →</span>
+      </div>
       <h2 class="grid-column: 1 / 6;" style="font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 400;">Verified Foundations</h2>
     </div>
 
@@ -867,7 +878,7 @@
   <section id="action">
     <div class="grid-container">
       <div class="action-wrap reveal-item">
-        <h2 class="action-title">For brands ready to be taken seriously.</h2>
+        <h2 class="action-title">Built on rock. Designed to grow with you.</h2>
         <a href="mailto:rovoche@gmail.com" class="action-btn">Begin Project</a>
         <a href="mailto:rovoche@gmail.com" class="action-mail">rovoche@gmail.com</a>
       </div>
@@ -947,24 +958,53 @@
       }
 
 
-      // ── SYSTEM 3: MOBILE INTERACTION FRAME ENGINE ──
+      // ── SYSTEM 3: ANTI-SENSENSITIVITY MOBILE TOUCH TIMING ROUTER ──
       if (window.innerWidth <= 768) {
         document.querySelectorAll('.work-item').forEach(item => {
-          item.addEventListener('touchstart', function() {
-            item.classList.add('pressed-state');
+          let touchStartTimeout = null;
+          let startY = 0;
+          let isScrolling = false;
+
+          item.addEventListener('touchstart', function(e) {
+            startY = e.touches[0].clientY;
+            isScrolling = false;
+            
+            // Deliberate hold threshold loop prevents instant activation while scrolling
+            touchStartTimeout = setTimeout(() => {
+              if (!isScrolling) {
+                item.classList.add('pressed-state');
+              }
+            }, 180); 
+          }, { passive: true });
+
+          item.addEventListener('touchmove', function(e) {
+            let currentY = e.touches[0].clientY;
+            // Cancel hold sequence instantly if vertical finger displacement path is observed
+            if (Math.abs(currentY - startY) > 10) {
+              isScrolling = true;
+              clearTimeout(touchStartTimeout);
+              item.classList.remove('pressed-state');
+            }
           }, { passive: true });
 
           item.addEventListener('touchend', function() {
-            const destinationUrl = item.getAttribute('data-url');
-            setTimeout(() => {
+            clearTimeout(touchStartTimeout);
+            
+            if (!isScrolling && item.classList.contains('pressed-state')) {
+              const destinationUrl = item.getAttribute('data-url');
+              setTimeout(() => {
+                item.classList.remove('pressed-state');
+                if(destinationUrl) {
+                  window.open(destinationUrl, '_blank', 'noopener');
+                }
+              }, 300);
+            } else {
               item.classList.remove('pressed-state');
-              if(destinationUrl) {
-                window.open(destinationUrl, '_blank', 'noopener');
-              }
-            }, 350);
+            }
           }, { passive: true });
 
           item.addEventListener('touchcancel', function() {
+            clearTimeout(touchStartTimeout);
             item.classList.remove('pressed-state');
           }, { passive: true });
         });
@@ -1004,7 +1044,7 @@
         const viewport = document.getElementById('carousel-viewport');
         const track = document.getElementById('carousel-track');
         let isDown = false;
-        let startX, scrollLeft;
+        let startX;
         let currentTranslate = 0;
         let prevTranslate = 0;
 
@@ -1021,10 +1061,9 @@
           if(!isDown) return;
           e.preventDefault();
           const x = e.pageX - viewport.offsetLeft;
-          const walk = (x - startX) * 1.5; // Friction coefficient factor
+          const walk = (x - startX) * 1.5; 
           currentTranslate = prevTranslate + walk;
 
-          // Setting hard boundary bounds
           const maxLeft = 0;
           const maxRight = -(track.offsetWidth - viewport.offsetWidth + 64);
           if (currentTranslate > maxLeft) currentTranslate = maxLeft;
